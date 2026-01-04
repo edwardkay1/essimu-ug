@@ -21,7 +21,7 @@ const features = [
     bgColor: "bg-purple-50",
     },
 ];
-export const WhyShopWithUs = () => {
+export default function WhyShopWithUs(){
     return (
         <section className="py-16 px-6 lg:px-20 bg-white dark:bg-[#0d1117]">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
@@ -42,7 +42,7 @@ export const WhyShopWithUs = () => {
               <div className="mb-4">
                 {feature.icon}
               </div>
-                <h3 className="text-xl font-semibold text-[#111418] dark:text-white mb-2">
+                <h3 className="text-xl font-semibold text-[#111418] dark:text-black mb-2">
                     {feature.title}
                 </h3>
                 <p className="text-[#60758a] dark:text-[#9ca3af] leading-relaxed">

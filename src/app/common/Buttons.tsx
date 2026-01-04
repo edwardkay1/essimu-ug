@@ -1,8 +1,14 @@
+import { MessageSquare } from "lucide-react";
 export function Order() {
+    // 
   return (
-    <div className="text-[#60758a] flex border-none bg-[#f0f2f5] dark:bg-[#1a232e] items-center justify-center pl-4 rounded-l-lg border-r-0">
-<span className="material-symbols-outlined text-[20px]">search</span>
-</div>
+    <button 
+        onClick={() => window.open('https://wa.me/yournumber', '_blank')}
+        className="flex items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0070f3] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors shadow-lg shadow-primary/20"
+    >
+        <MessageSquare size={16} className="mr-2 fill-white" />
+        <span className="truncate">Order via WhatsApp</span>
+    </button>
   );
 }
 

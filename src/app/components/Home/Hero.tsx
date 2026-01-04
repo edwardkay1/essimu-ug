@@ -1,9 +1,11 @@
+"use client";
 import HeroData from "../../data/homeData";
 import Image from "next/image";
 import { ShopNow, BrowseCatalog } from "../../common/Buttons";
 export default function Hero() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center bg-white dark:bg-[#0d1117]">
+    // lets add a growing blue and black gradient background to the hero section from the
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center bg-linear-to-t from-white to-blue-300 dark:from-[#0d1117] dark:to-[#0d1117]">
       {/* Left Column: Content */}
       <div className="flex flex-col justify-center items-start px-6 lg:px-20 py-12 lg:py-24">
 
@@ -45,7 +47,7 @@ export default function Hero() {
             priority
           />
           {/* Optional: Text overlay found in your screenshot */}
-          <div className="absolute bottom-6 left-6 text-white">
+          <div className="absolute bottom-6 left-6 light:text-black dark:text-white bg-white/70 dark:bg-black/70 px-4 py-2 rounded-lg">
             <h3 className="text-xl font-bold">iPhone 15 Pro</h3>
             <p className="text-sm opacity-90">Now available in Titanium</p>
           </div>
