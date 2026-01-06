@@ -1,57 +1,120 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Smartphone } from 'lucide-react';
+import { 
+    ShoppingCart, 
+    Smartphone, 
+    Wrench, 
+    Menu, 
+    X, 
+    ChevronRight,
+    MessageSquare
+} from 'lucide-react';
+import { useCart } from "../context/CartContext";
 import { Order } from "../common/Buttons";
-import { useCart } from "../context/CartContext"; //
 
 export default function Navbar() {
-    const { totalItems } = useCart(); // Get real-time count from context
+    const { totalItems } = useCart();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const navItems = [
+        { name: "Smartphones", href: "/shop/smartphones" },
+        { name: "Laptops", href: "/shop/laptops" },
+        { name: "Smart TVs", href: "/shop/tvs" },
+        { name: "Accessories", href: "/shop/accessories" },
+    ];
 
     return (
-        <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-[#dbe0e6] dark:border-[#2a3441] bg-white dark:bg-[#111418] px-10 py-3 shadow-sm">
-            <div className="flex items-center gap-8">
-                <Link href="/" className="flex items-center gap-2 text-[#111418] dark:text-white cursor-pointer">
-                    <div className="size-8 flex items-center justify-center rounded-lg bg-[#0070f3]/10 text-[#0070f3]">
-                        <Smartphone className="w-5 h-5"/>
-                    </div>
-                    <h2 className="text-[#111418] dark:text-white text-xl font-bold leading-tight tracking-tight">ESSIMU</h2>
-                </Link>
+        <header className="sticky top-0 z-[100] w-full border-b border-gray-100 dark:border-white/5 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl transition-all">
+            <div className="max-w-[1440px] mx-auto px-6 lg:px-20 h-20 flex items-center justify-between">
                 
-                <div className="hidden md:flex items-center gap-6">
-                    <Link className="text-[#111418] dark:text-[#d1d5db] text-sm font-medium hover:text-[#0070f3] transition-colors leading-normal" href="/shop/smartphones">Phones</Link>
-                    <Link className="text-[#111418] dark:text-[#d1d5db] text-sm font-medium hover:text-[#0070f3] transition-colors leading-normal" href="/shop/accessories">Accessories</Link>
-                    <Link className="text-[#111418] dark:text-[#d1d5db] text-sm font-medium hover:text-[#0070f3] transition-colors leading-normal" href="#">Support</Link>
+                {/* --- LOGO --- */}
+                <Link href="/" className="flex items-center gap-3 group shrink-0">
+                    <div className="size-10 flex items-center justify-center rounded-2xl bg-[#0070f3] text-white shadow-lg shadow-blue-500/20 group-hover:rotate-6 transition-transform">
+                        <Smartphone size={22} strokeWidth={3} />
+                    </div>
+                    <div className="flex flex-col">
+                        <h2 className="text-gray-900 dark:text-white text-xl font-black leading-none tracking-tighter uppercase">ESSIMU</h2>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#0070f3]">Uganda</span>
+                    </div>
+                </Link>
+
+                {/* --- DESKTOP NAVIGATION --- */}
+                <nav className="hidden lg:flex items-center gap-10">
+                    {navItems.map((item) => (
+                        <Link 
+                            key={item.name}
+                            href={item.href} 
+                            className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-[#0070f3] transition-all"
+                        >
+                            {item.name}
+                        </Link>
+                    ))}
+                </nav>
+
+                {/* --- ACTION BUTTONS --- */}
+                <div className="flex items-center gap-3 lg:gap-6">
+                    {/* Repair Button (Hidden on Small Mobile) */}
+                    <Link 
+                        href="/repair" 
+                        className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-2xl hover:bg-[#0070f3] transition-all group"
+                    >
+                        <Wrench size={16} className="group-hover:rotate-45 transition-transform" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Repair</span>
+                    </Link>
+
+                    {/* Order Component (Hidden on Mobile) */}
+                    <div className="hidden lg:block">
+                        <Order />
+                    </div>
+
+                    {/* Cart Icon */}
+                    <Link href="/cart" className="relative p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-blue-50 transition-all group">
+                        <ShoppingCart size={20} className="text-gray-900 dark:text-white group-hover:text-[#0070f3]" />
+                        {totalItems > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#0070f3] text-[9px] font-black text-white border-2 border-white dark:border-[#0a0a0a]">
+                                {totalItems}
+                            </span>
+                        )}
+                    </Link>
+
+                    {/* Mobile Menu Toggle */}
+                    <button 
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="lg:hidden p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white"
+                    >
+                        {isOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                 </div>
             </div>
 
-            <div className="flex flex-1 justify-end gap-6 items-center">
-                <label className="hidden sm:flex flex-col min-w-40 h-10 max-w-xs w-full">
-                    <div className="flex w-full flex-1 items-stretch rounded-lg h-full group focus-within:ring-2 focus-within:ring-[#0070f3]/50 transition-all">
-                        <input 
-                            className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111418] dark:text-white focus:outline-0 focus:ring-0 border-none bg-[#f0f2f5] dark:bg-[#1a232e] h-full placeholder:text-[#60758a] px-4 text-sm font-normal leading-normal" 
-                            placeholder="Search phones..." 
-                        />
-                    </div>
-                </label>
-
-                <Order />
-
-                {/* Dynamic Shopping Cart Link */}
-                <Link 
-                    href="/cart"
-                    className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
-                    aria-label="View Cart"
-                >
-                    <ShoppingCart className="w-6 h-6 text-[#111418] dark:text-white group-hover:text-[#0070f3] transition-colors" />
-                    
-                    {/* Only show badge if there are items in the cart */}
-                    {totalItems > 0 && (
-                        <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#0070f3] text-[10px] font-bold text-white border-2 border-white dark:border-[#111418] animate-in zoom-in duration-300">
-                            {totalItems}
-                        </span>
-                    )}
-                </Link>
-            </div>
+            {/* --- MOBILE OVERLAY MENU --- */}
+            {isOpen && (
+                <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-[#0a0a0a] border-b border-gray-100 dark:border-white/5 animate-in slide-in-from-top duration-300">
+                    <nav className="flex flex-col p-6 gap-2">
+                        {navItems.map((item) => (
+                            <Link 
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setIsOpen(false)}
+                                className="flex justify-between items-center p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 group transition-all"
+                            >
+                                <span className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">{item.name}</span>
+                                <ChevronRight size={18} className="text-gray-300 group-hover:text-[#0070f3] group-hover:translate-x-1 transition-all" />
+                            </Link>
+                        ))}
+                        <div className="h-[1px] bg-gray-100 dark:bg-white/5 my-4" />
+                        <Link 
+                            href="/repair" 
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-3 p-4 rounded-2xl bg-gray-900 text-white"
+                        >
+                            <Wrench size={18} />
+                            <span className="text-sm font-black uppercase tracking-widest">Hardware Repair</span>
+                        </Link>
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }
