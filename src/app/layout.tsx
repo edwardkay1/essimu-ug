@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Footer from "./components/Footer";
+// import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
 export const metadata: Metadata = {
   title: "Essimu Uganda",
@@ -18,7 +18,7 @@ export default function RootLayout({
         <CartProvider>
           {children}
         </CartProvider>
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

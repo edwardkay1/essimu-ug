@@ -8,21 +8,21 @@ export const categoryData: categoryProps[] =[
     {
         imageSrc: "/Image/iPhones.png",
         imageAlt: "showing iPhones",
-        imageTitle: "iPhones"
+        imageTitle: "smartphones"
     },
     {
         imageSrc: "/Image/androids.png",
         imageAlt: "showing android phones",
-        imageTitle: "Androids"
+        imageTitle: "tvs"
     },
     {
         imageSrc: "/Image/cases.png",
         imageAlt: "showing phone cases",
-        imageTitle: "Protective Cases"
+        imageTitle: "laptops"
     },
     {
         imageSrc: "/Image/sound.png",
         imageAlt: "showing sound accessories",
-        imageTitle: "Audio & Sound"
+        imageTitle: "accessories"
     }
 ];

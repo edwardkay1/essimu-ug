@@ -1,15 +1,16 @@
 "use client";
 import { useState, useMemo } from "react";
-import Link from "next/link"; // Functional Navigation
+import Link from "next/link";
 import { products } from "../../admin/data"; 
 import AccessorySidebar from "../../components/Shop/ProductSidebar";
 import AccessoryCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
-export default function AccessoriesPage() {
-    const accessoriesData = useMemo(() => 
-        products.filter(p => p.category === "Accessory"), 
+export default function TelevisionsPage() {
+    // 1. Filter only items with the "TV" category from the master data
+    const tvData = useMemo(() => 
+        products.filter(p => p.category === "TV"), 
     []);
 
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -25,13 +26,12 @@ export default function AccessoriesPage() {
 
     const filteredItems = useMemo(() => {
         return selectedFilters.length === 0 
-            ? accessoriesData 
-            : accessoriesData.filter(item => 
+            ? tvData 
+            : tvData.filter(item => 
                 selectedFilters.includes(item.brand) || 
-                selectedFilters.includes(item.condition) ||
-                (item.subCategory && selectedFilters.includes(item.subCategory))
+                selectedFilters.includes(item.condition)
             );
-    }, [selectedFilters, accessoriesData]);
+    }, [selectedFilters, tvData]);
 
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
     const currentItems = filteredItems.slice(
@@ -44,36 +44,39 @@ export default function AccessoriesPage() {
             <Navbar />
             
             <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-10">
-                {/* Breadcrumbs - Now Functional */}
+                {/* Functional Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] mb-6">
                     <Link 
                         href="/" 
-                        className="text-gray-400 hover:text-[#0070f3] transition-colors"
+                        className="text-gray-400 hover:text-indigo-600 transition-colors"
                     >
                         Home
                     </Link>
                     <span className="text-gray-300">/</span>
-                    <span className="text-gray-900">Accessories</span>
+                    <span className="text-gray-900">Televisions</span>
                 </nav>
 
-                {/* Hero Banner */}
-                <div className="bg-black rounded-[2.5rem] p-12 mb-12 text-white relative overflow-hidden min-h-[320px] flex items-center shadow-2xl">
-                    <div className="relative z-10 max-w-lg">
-                        <span className="bg-[#0070f3] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-blue-500/20">
-                            Essential Add-ons
+                {/* Hero Banner - Cinematic Theme */}
+                <div className="bg-gradient-to-br from-[#0a0a0c] via-[#1a1a2e] to-black rounded-[2.5rem] p-12 mb-12 text-white relative overflow-hidden min-h-[340px] flex items-center shadow-2xl">
+                    <div className="relative z-10 max-w-xl">
+                        <span className="bg-indigo-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20">
+                            Home Cinema
                         </span>
                         <h1 className="text-5xl lg:text-6xl font-black mt-6 mb-4 leading-tight tracking-tight">
-                            Complete Your Setup.
+                            Immersive <br/>Experience.
                         </h1>
-                        <p className="text-gray-400 text-sm font-medium leading-relaxed max-w-sm">
-                            Premium chargers, durable cases, and high-fidelity audio. 
-                            Verified accessories for your Apple and Samsung devices.
+                        <p className="text-gray-400 text-sm font-medium leading-relaxed max-w-md">
+                            From Samsung Crystal UHD to LG OLEDs. Discover the perfect screen for your living room 
+                            with our verified collection of brand new and UK-used smart TVs.
                         </p>
                     </div>
-                    <div className="absolute right-0 bottom-0 w-2/3 h-full bg-gradient-to-l from-blue-600/10 to-transparent pointer-events-none" />
+                    {/* Decorative "Light Leak" effect */}
+                    <div className="absolute -right-20 -top-20 size-96 bg-indigo-500/10 rounded-full blur-[120px]" />
+                    <div className="absolute right-1/4 bottom-0 w-1/2 h-full bg-gradient-to-t from-indigo-900/10 to-transparent pointer-events-none" />
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-12">
+                    {/* Sidebar */}
                     <aside className="hidden lg:block w-64 shrink-0">
                         <div className="sticky top-32">
                             <AccessorySidebar 
@@ -87,11 +90,11 @@ export default function AccessoriesPage() {
                     <main className="flex-1">
                         <div className="flex justify-between items-end mb-10">
                             <div>
-                                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Accessory Shop</h2>
+                                <h2 className="text-3xl font-black text-gray-900 tracking-tight">TV & Home Audio</h2>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <div className="size-2 bg-green-500 rounded-full animate-pulse" />
-                                    <p className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.2em]">
-                                        {filteredItems.length} Products Available
+                                    <div className="size-2 bg-indigo-600 rounded-full animate-pulse" />
+                                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">
+                                        {filteredItems.length} Displays Found
                                     </p>
                                 </div>
                             </div>
@@ -105,10 +108,11 @@ export default function AccessoriesPage() {
                             </div>
                         ) : (
                             <div className="py-32 text-center bg-gray-50 rounded-[3rem] border border-dashed border-gray-200">
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-sm">Out of Stock</p>
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-sm">No Displays Found</p>
+                                <p className="text-gray-400 text-xs mt-2 font-medium">We couldn't find any TVs matching your current filters.</p>
                                 <button 
                                     onClick={() => setSelectedFilters([])} 
-                                    className="mt-6 px-6 py-3 bg-white border border-gray-200 rounded-2xl text-[#0070f3] text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm"
+                                    className="mt-6 px-6 py-3 bg-white border border-gray-200 rounded-2xl text-indigo-600 text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm"
                                 >
                                     Reset Filters
                                 </button>
@@ -124,7 +128,7 @@ export default function AccessoriesPage() {
                                         onClick={() => setCurrentPage(i + 1)}
                                         className={`size-14 rounded-[1.25rem] font-black transition-all text-sm tracking-tighter ${
                                             currentPage === i + 1 
-                                            ? "bg-[#0070f3] text-white shadow-2xl shadow-blue-500/40 scale-110" 
+                                            ? "bg-indigo-600 text-white shadow-2xl shadow-indigo-500/40 scale-110" 
                                             : "bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900"
                                         }`}
                                     >

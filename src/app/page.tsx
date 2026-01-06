@@ -7,6 +7,7 @@ import Category from "./components/Home/Category";
 import BestSellers from "./components/Home/BestSellers";
 import ReadySection from "./components/Home/Ready";
 import WhatsappBtn from "./components/Home/WhatsappBtn";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
 <ReadySection />
 <WhatsappBtn />
 </div>
+<Footer />
 </>
   );
 } 
