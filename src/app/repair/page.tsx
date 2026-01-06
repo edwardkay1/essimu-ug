@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Wrench, Smartphone, Monitor, Zap, CheckCircle2, MessageSquare, Clock, Shield, X } from "lucide-react";
+import { Wrench, Smartphone, Monitor, Zap, CheckCircle2, MessageSquare, Clock, Shield, X, MapPin } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -14,8 +14,8 @@ export default function RepairPage() {
 
     const handleWhatsAppSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const phone = "256700000000"; // Your Business Number
-        const message = `*SERVICE SYNC REQUEST*\n--------------------------\n*Device:* ${formData.device}\n*Model:* ${formData.model}\n*Issue:* ${formData.issue}\n--------------------------\n_Sent via ESSIMU Web Portal_`;
+        const phone = "256756922058"; // Essimu Official Line
+        const message = `*SERVICE SYNC REQUEST*\n--------------------------\n*Device:* ${formData.device}\n*Model:* ${formData.model}\n*Issue:* ${formData.issue}\n--------------------------\n_Sent via ESSIMU Repair Portal_`;
         
         const encodedMessage = encodeURIComponent(message);
         window.open(`https://wa.me/${phone}?text=${encodedMessage}`, "_blank");
@@ -23,115 +23,148 @@ export default function RepairPage() {
     };
 
     return (
-        <div className="bg-white min-h-screen relative">
+        <div className="bg-white dark:bg-[#0a0a0a] min-h-screen relative">
             <Navbar />
             
-            <main className="max-w-[1440px] mx-auto px-6 lg:px-20 py-16">
-                {/* HERO SECTION */}
+            <main className="max-w-[1440px] mx-auto px-6 lg:px-20 py-24">
+                {/* --- HERO SECTION --- */}
                 <div className="grid lg:grid-cols-2 gap-20 items-center mb-32">
                     <div className="space-y-8">
                         <div>
-                            <span className="inline-block px-4 py-1.5 bg-blue-50 text-[#0070f3] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-6">
-                                Certified Technical Center
-                            </span>
-                            <h1 className="text-6xl lg:text-8xl font-black text-gray-900 leading-[0.85] tracking-[-0.05em] mb-8">
-                                Hardware <br/> <span className="text-[#0070f3]">Failure?</span>
+                            <div className="flex items-center gap-2 mb-6">
+                                <Zap size={14} className="text-[#0070f3] fill-[#0070f3]" />
+                                <span className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em]">
+                                    Certified Technical Hub
+                                </span>
+                            </div>
+                            <h1 className="text-6xl lg:text-8xl font-black text-gray-900 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase">
+                                Hardware <br/> <span className="text-gray-400">Failure?</span>
                             </h1>
-                            <p className="text-gray-500 font-bold text-lg max-w-md leading-relaxed">
-                                High-precision engineering for your premium gear. Sync with a technician now.
+                            <p className="text-gray-500 dark:text-gray-400 font-bold text-lg max-w-md leading-relaxed italic">
+                                High-precision engineering for iPhones, MacBooks, and premium displays. Synchronize with our Shop B118 technicians.
                             </p>
                         </div>
 
-                        {/* Updated Button to trigger Modal */}
-                        <button 
-                            onClick={() => setIsModalOpen(true)}
-                            className="flex items-center gap-4 px-10 py-6 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-black/20 hover:bg-[#0070f3] transition-all"
-                        >
-                            <MessageSquare size={20} /> Request Service Sync
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button 
+                                onClick={() => setIsModalOpen(true)}
+                                className="flex items-center justify-center gap-4 px-10 py-6 bg-[#0070f3] text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-blue-500/20 hover:scale-105 transition-all"
+                            >
+                                <Wrench size={18} /> Request Service Sync
+                            </button>
+                            <div className="flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                                <MapPin size={18} className="text-[#0070f3]" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kisa Kyamaria B118</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Feature Card */}
-                    <div className="relative">
-                        <div className="bg-[#0a0a0a] rounded-[3rem] p-12 text-white border border-white/5 shadow-3xl">
-                             <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-3">
-                                <Shield className="text-[#0070f3]" /> ESSIMU Standards
+                    {/* Standard Card */}
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-blue-600 rounded-[3.5rem] blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
+                        <div className="relative bg-[#0a0a0a] rounded-[3.5rem] p-12 text-white border border-white/5 shadow-3xl">
+                             <h3 className="text-2xl font-black mb-10 uppercase tracking-tighter flex items-center gap-3">
+                                <Shield className="text-[#0070f3]" /> B118 Repair Standards
                             </h3>
-                            <div className="space-y-6">
-                                {["Express Diagnostics", "90 Day Warranty", "OEM Grade Parts"].map((text) => (
-                                    <div key={text} className="flex items-center gap-4">
-                                        <CheckCircle2 className="text-[#0070f3]" size={20} />
-                                        <span className="text-sm font-black uppercase tracking-widest text-gray-300">{text}</span>
+                            <div className="space-y-8">
+                                {[
+                                    { label: "Express Diagnostics", sub: "Under 30 minutes" },
+                                    { label: "90 Day Tech Warranty", sub: "On all replaced modules" },
+                                    { label: "OEM Grade Parts", sub: "Original Apple/Samsung Stock" }
+                                ].map((item) => (
+                                    <div key={item.label} className="flex items-start gap-5">
+                                        <div className="size-6 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="text-[#0070f3]" size={14} />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black uppercase tracking-widest text-white">{item.label}</p>
+                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">{item.sub}</p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* --- SERVICE STEPS --- */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+                    {[
+                        { step: "01", title: "Initialize", desc: "Submit your device details via the Service Sync portal." },
+                        { step: "02", title: "Assessment", desc: "Bring your gear to Shop B118 or request a pickup." },
+                        { step: "03", title: "Restoration", desc: "Hardware is restored to factory specs within 24-48 hours." }
+                    ].map((s) => (
+                        <div key={s.step} className="p-10 bg-gray-50 dark:bg-[#111111] rounded-[2.5rem] border border-gray-100 dark:border-white/5">
+                            <span className="text-4xl font-black text-[#0070f3]/20 mb-6 block">{s.step}</span>
+                            <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">{s.title}</h4>
+                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed uppercase">{s.desc}</p>
+                        </div>
+                    ))}
+                </div>
             </main>
 
             {/* --- REPAIR MODAL --- */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+                <div className="fixed inset-0 z-[200] flex items-center justify-center px-6">
                     <div 
-                        className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
+                        className="absolute inset-0 bg-gray-900/80 backdrop-blur-xl"
                         onClick={() => setIsModalOpen(false)}
                     />
                     
-                    <div className="relative bg-white w-full max-w-lg rounded-[3rem] p-10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-                        {/* Header */}
+                    <div className="relative bg-white dark:bg-[#0f0f0f] w-full max-w-lg rounded-[3rem] p-10 shadow-2xl overflow-hidden border border-white/10">
+                        {/* Modal Header */}
                         <div className="flex justify-between items-center mb-10">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">Initialize Sync</h2>
-                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Technician Assignment</p>
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Service Sync</h2>
+                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Assigning Hardware Tech...</p>
                             </div>
-                            <button onClick={() => setIsModalOpen(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
-                                <X size={24} />
+                            <button onClick={() => setIsModalOpen(false)} className="p-3 bg-gray-100 dark:bg-white/5 rounded-2xl hover:scale-110 transition-all dark:text-white">
+                                <X size={20} />
                             </button>
                         </div>
 
                         <form onSubmit={handleWhatsAppSubmit} className="space-y-6">
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 block mb-2 px-1">Device Type</label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Hardware Sector</label>
                                 <select 
                                     required
-                                    className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all appearance-none"
+                                    className="w-full bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all dark:text-white"
                                     onChange={(e) => setFormData({...formData, device: e.target.value})}
                                 >
-                                    <option value="">Select Device...</option>
+                                    <option value="">Select Category...</option>
                                     <option value="iPhone">iPhone / Smartphone</option>
-                                    <option value="Laptop">MacBook / Laptop</option>
-                                    <option value="TV">Smart TV</option>
-                                    <option value="Audio">Audio Gear</option>
+                                    <option value="Laptop">MacBook / PC Laptop</option>
+                                    <option value="TV">Smart TV / Monitor</option>
+                                    <option value="Other">Other Hardware</option>
                                 </select>
                             </div>
 
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 block mb-2 px-1">Exact Model</label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Model Specifications</label>
                                 <input 
                                     required
-                                    placeholder="e.g. iPhone 15 Pro Max"
-                                    className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all"
+                                    placeholder="e.g. MacBook Pro M2 14-inch"
+                                    className="w-full bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all dark:text-white"
                                     onChange={(e) => setFormData({...formData, model: e.target.value})}
                                 />
                             </div>
 
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 block mb-2 px-1">Problem Description</label>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Fault Description</label>
                                 <textarea 
                                     required
-                                    placeholder="e.g. Broken screen, won't charge..."
+                                    placeholder="Briefly describe the hardware failure..."
                                     rows={3}
-                                    className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all resize-none"
+                                    className="w-full bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all resize-none dark:text-white"
                                     onChange={(e) => setFormData({...formData, issue: e.target.value})}
                                 />
                             </div>
 
                             <button 
                                 type="submit"
-                                className="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all flex items-center justify-center gap-3"
+                                className="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
                             >
-                                <MessageSquare size={18} /> Launch WhatsApp Sync
+                                <MessageSquare size={18} /> Launch Technical Sync
                             </button>
                         </form>
                     </div>

@@ -2,20 +2,19 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { products } from "../../admin/data"; 
-import AccessorySidebar from "../../components/Shop/ProductSidebar";
-import AccessoryCard from "../../components/Shop/ProductCard";
+import ProductSidebar from "../../components/Shop/ProductSidebar";
+import ProductCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { Monitor, ChevronRight, Tv, Play, Cast, Search, X } from "lucide-react";
 
 export default function TelevisionsPage() {
-    // 1. Filter only items with the "TV" category from the master data
-    const tvData = useMemo(() => 
-        products.filter(p => p.category === "TV"), 
-    []);
+    const tvData = useMemo(() => products.filter(p => p.category === "TV"), []);
 
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
+    const itemsPerPage = 10;
 
     const toggleFilter = (filter: string) => {
         setSelectedFilters(prev => 
@@ -24,14 +23,19 @@ export default function TelevisionsPage() {
         setCurrentPage(1); 
     };
 
+    // --- CINEMATIC FILTER LOGIC ---
     const filteredItems = useMemo(() => {
-        return selectedFilters.length === 0 
-            ? tvData 
-            : tvData.filter(item => 
-                selectedFilters.includes(item.brand) || 
-                selectedFilters.includes(item.condition)
-            );
-    }, [selectedFilters, tvData]);
+        return tvData.filter(item => {
+            const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                 item.brand.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            const matchesFilter = selectedFilters.length === 0 || 
+                                 selectedFilters.includes(item.brand) || 
+                                 selectedFilters.includes(item.condition);
+
+            return matchesSearch && matchesFilter;
+        });
+    }, [selectedFilters, searchQuery, tvData]);
 
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
     const currentItems = filteredItems.slice(
@@ -40,99 +44,115 @@ export default function TelevisionsPage() {
     );
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white dark:bg-[#08080a] min-h-screen">
             <Navbar />
             
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-10">
-                {/* Functional Breadcrumbs */}
-                <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] mb-6">
-                    <Link 
-                        href="/" 
-                        className="text-gray-400 hover:text-indigo-600 transition-colors"
-                    >
-                        Home
-                    </Link>
-                    <span className="text-gray-300">/</span>
-                    <span className="text-gray-900">Televisions</span>
-                </nav>
-
-                {/* Hero Banner - Cinematic Theme */}
-                <div className="bg-gradient-to-br from-[#0a0a0c] via-[#1a1a2e] to-black rounded-[2.5rem] p-12 mb-12 text-white relative overflow-hidden min-h-[340px] flex items-center shadow-2xl">
-                    <div className="relative z-10 max-w-xl">
-                        <span className="bg-indigo-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20">
-                            Home Cinema
-                        </span>
-                        <h1 className="text-5xl lg:text-6xl font-black mt-6 mb-4 leading-tight tracking-tight">
-                            Immersive <br/>Experience.
-                        </h1>
-                        <p className="text-gray-400 text-sm font-medium leading-relaxed max-w-md">
-                            From Samsung Crystal UHD to LG OLEDs. Discover the perfect screen for your living room 
-                            with our verified collection of brand new and UK-used smart TVs.
-                        </p>
+            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
+                
+                {/* --- CINEMATIC SEARCH BAR --- */}
+                <div className="relative mb-8 lg:mb-12 group">
+                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                        <Search size={18} className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                     </div>
-                    {/* Decorative "Light Leak" effect */}
-                    <div className="absolute -right-20 -top-20 size-96 bg-indigo-500/10 rounded-full blur-[120px]" />
-                    <div className="absolute right-1/4 bottom-0 w-1/2 h-full bg-gradient-to-t from-indigo-900/10 to-transparent pointer-events-none" />
+                    <input 
+                        type="text"
+                        placeholder="Search TVs (e.g. Sony 55 inch, LG OLED...)"
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                        className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-indigo-500 rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-indigo-500/10"
+                    />
+                    {searchQuery && (
+                        <button 
+                            onClick={() => setSearchQuery("")}
+                            className="absolute inset-y-0 right-6 flex items-center text-gray-400 hover:text-red-500"
+                        >
+                            <X size={18} />
+                        </button>
+                    )}
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-12">
-                    {/* Sidebar */}
-                    <aside className="hidden lg:block w-64 shrink-0">
-                        <div className="sticky top-32">
-                            <AccessorySidebar 
-                                selectedCats={selectedFilters} 
-                                onCatChange={toggleFilter} 
-                                onReset={() => setSelectedFilters([])} 
-                            />
+                {/* --- NAVIGATION --- */}
+                <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
+                    <Link href="/" className="text-gray-400 hover:text-indigo-500 transition-colors">Base Hub</Link>
+                    <ChevronRight size={10} className="text-gray-300" />
+                    <span className="text-indigo-600">Visual Display Index</span>
+                </nav>
+
+                {/* --- HERO BANNER --- */}
+                <div className="bg-gradient-to-br from-[#0a0a0c] via-[#121225] to-black rounded-[2.5rem] lg:rounded-[3.5rem] p-8 lg:p-16 mb-12 lg:mb-16 text-white relative overflow-hidden flex items-center shadow-3xl border border-white/5">
+                    <div className="relative z-10 max-w-2xl">
+                        <div className="flex items-center gap-2 mb-4 lg:mb-6">
+                            <div className="bg-indigo-600 p-1 rounded">
+                                <Cast size={12} className="text-white" />
+                            </div>
+                            <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">
+                                Smart Entertainment Hub
+                            </span>
                         </div>
+                        <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
+                            Visual <br/> <span className="text-indigo-500">Immersion.</span>
+                        </h1>
+                        <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-md italic">
+                            OLED technology and HDR smart displays handpicked for Kampala's Home Cinemas.
+                        </p>
+                    </div>
+                    <div className="absolute -right-20 -bottom-20 size-[300px] lg:size-[500px] bg-indigo-600/10 rounded-full blur-[100px]" />
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
+                    <aside className="hidden lg:block w-72 shrink-0">
+                        <ProductSidebar 
+                            selectedCats={selectedFilters} 
+                            onCatChange={toggleFilter} 
+                            onReset={() => setSelectedFilters([])}
+                            activeCategory="TV" 
+                        />
                     </aside>
 
                     <main className="flex-1">
-                        <div className="flex justify-between items-end mb-10">
+                        <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
-                                <h2 className="text-3xl font-black text-gray-900 tracking-tight">TV & Home Audio</h2>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <div className="size-2 bg-indigo-600 rounded-full animate-pulse" />
-                                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">
-                                        {filteredItems.length} Displays Found
-                                    </p>
-                                </div>
+                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
+                                    Display Grid. <Play size={20} className="text-indigo-600 fill-indigo-600" />
+                                </h2>
+                                <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2">
+                                    {filteredItems.length} Smart Panels Syncing
+                                </p>
                             </div>
                         </div>
 
+                        {/* --- MOBILE GRID: 2 COLUMNS --- */}
                         {filteredItems.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-16">
+                            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
-                                    <AccessoryCard key={item.id} item={item} />
+                                    <ProductCard key={item.id} item={item} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-32 text-center bg-gray-50 rounded-[3rem] border border-dashed border-gray-200">
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-sm">No Displays Found</p>
-                                <p className="text-gray-400 text-xs mt-2 font-medium">We couldn't find any TVs matching your current filters.</p>
-                                <button 
-                                    onClick={() => setSelectedFilters([])} 
-                                    className="mt-6 px-6 py-3 bg-white border border-gray-200 rounded-2xl text-indigo-600 text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm"
-                                >
-                                    Reset Filters
-                                </button>
+                            <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
+                                <Tv size={40} className="text-gray-300 mb-4" />
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Signal: No Matches</p>
+                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-indigo-600 text-[9px] font-black uppercase tracking-widest">Restart Display Protocol</button>
                             </div>
                         )}
 
-                        {/* Pagination */}
+                        {/* --- PAGINATION --- */}
                         {totalPages > 1 && (
-                            <div className="mt-24 pt-10 border-t border-gray-50 flex justify-center items-center gap-4">
+                            <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
                                 {[...Array(totalPages)].map((_, i) => (
                                     <button
                                         key={i}
-                                        onClick={() => setCurrentPage(i + 1)}
-                                        className={`size-14 rounded-[1.25rem] font-black transition-all text-sm tracking-tighter ${
+                                        onClick={() => {
+                                            setCurrentPage(i + 1);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all text-[10px] lg:text-xs ${
                                             currentPage === i + 1 
-                                            ? "bg-indigo-600 text-white shadow-2xl shadow-indigo-500/40 scale-110" 
-                                            : "bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900"
+                                            ? "bg-indigo-600 text-white shadow-xl" 
+                                            : "bg-gray-50 dark:bg-white/5 text-gray-400"
                                         }`}
                                     >
-                                        {i + 1 < 10 ? `0${i + 1}` : i + 1}
+                                        {i + 1}
                                     </button>
                                 ))}
                             </div>

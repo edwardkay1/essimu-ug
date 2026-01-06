@@ -1,35 +1,42 @@
 "use client";
 import { useState, useMemo } from "react";
-import { products } from "../../admin/data"; // Pulling from your central data
-import AccessorySidebar from "../../components/Shop/ProductSidebar";
-import AccessoryCard from "../../components/Shop/ProductCard";
+import Link from "next/link";
+import { products } from "../../admin/data"; 
+import ProductSidebar from "../../components/Shop/ProductSidebar";
+import ProductCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { Smartphone, ChevronRight, Activity, SmartphoneNfc, Search, X } from "lucide-react";
 
 export default function SmartphonesPage() {
-    // We filter only "Phone" category from the master list
     const phoneData = useMemo(() => products.filter(p => p.category === "Phone"), []);
     
-    const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9; // Increased for better catalog view
+    const itemsPerPage = 10;
 
-    // Toggle Filter Function (Brand/Condition)
-    const toggleFilter = (brand: string) => {
-        setSelectedBrands(prev => 
-            prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+    const toggleFilter = (filter: string) => {
+        setSelectedFilters(prev => 
+            prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
         );
         setCurrentPage(1); 
     };
 
-    // Filter Logic
+    // --- INTEGRATED SEARCH & FILTER LOGIC ---
     const filteredItems = useMemo(() => {
-        return selectedBrands.length === 0 
-            ? phoneData 
-            : phoneData.filter(item => selectedBrands.includes(item.brand) || selectedBrands.includes(item.condition));
-    }, [selectedBrands, phoneData]);
+        return phoneData.filter(item => {
+            const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                 item.brand.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            const matchesFilter = selectedFilters.length === 0 || 
+                                 selectedFilters.includes(item.brand) || 
+                                 selectedFilters.includes(item.condition);
 
-    // Pagination Logic
+            return matchesSearch && matchesFilter;
+        });
+    }, [selectedFilters, searchQuery, phoneData]);
+
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
     const currentItems = filteredItems.slice(
         (currentPage - 1) * itemsPerPage, 
@@ -37,79 +44,111 @@ export default function SmartphonesPage() {
     );
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white dark:bg-[#0a0a0a] min-h-screen">
             <Navbar />
             
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-10">
-                {/* Breadcrumbs */}
-                <div className="text-xs text-gray-400 mb-4">
-                    Home &gt; <span className="text-gray-900 font-medium">Smartphones</span>
-                </div>
-
-                {/* Hero Banner */}
-                <div className="bg-[#0070f3] rounded-[2.5rem] p-12 mb-12 text-white relative overflow-hidden h-[320px] flex items-center shadow-2xl shadow-blue-500/20">
-                    <div className="relative z-10 max-w-xl">
-                        <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">New Arrivals</span>
-                        <h1 className="text-5xl font-black mt-4 mb-4 leading-tight">iPhone & Samsung <br/>Flagships.</h1>
-                        <p className="text-blue-50 text-sm leading-relaxed opacity-90">Browse our curated collection of brand new and premium UK-used smartphones. All devices are verified and ready for pickup.</p>
+            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
+                
+                {/* --- UNIVERSAL SEARCH PROTOCOL --- */}
+                <div className="relative mb-8 lg:mb-12 group">
+                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                        <Search size={18} className="text-gray-400 group-focus-within:text-[#0070f3] transition-colors" />
                     </div>
-                    {/* Decorative background element */}
-                    <div className="absolute right-[-10%] top-[-20%] size-96 bg-white/10 rounded-full blur-3xl"></div>
+                    <input 
+                        type="text"
+                        placeholder="Search Phones (e.g. iPhone 15, S24 Ultra...)"
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                        className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-[#0070f3] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-blue-500/10"
+                    />
+                    {searchQuery && (
+                        <button 
+                            onClick={() => setSearchQuery("")}
+                            className="absolute inset-y-0 right-6 flex items-center text-gray-400 hover:text-red-500"
+                        >
+                            <X size={18} />
+                        </button>
+                    )}
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-12">
-                    {/* Sidebar - Now handles Phone Brands */}
-                    <aside className="hidden lg:block w-64 shrink-0">
-                        <AccessorySidebar 
-                            selectedCats={selectedBrands} 
+                {/* --- NAVIGATION --- */}
+                <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
+                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Base Hub</Link>
+                    <ChevronRight size={10} className="text-gray-300" />
+                    <span className="text-[#0070f3]">Mobile Inventory</span>
+                </nav>
+
+                {/* --- HERO BANNER --- */}
+                <div className="bg-[#0070f3] rounded-[2.5rem] lg:rounded-[3.5rem] p-8 lg:p-16 mb-12 lg:mb-16 text-white relative overflow-hidden flex items-center shadow-2xl">
+                    <div className="relative z-10 max-w-xl">
+                        <div className="flex items-center gap-2 mb-4 lg:mb-6">
+                            <Activity size={14} className="animate-pulse" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                                Verified Stock Only
+                            </span>
+                        </div>
+                        <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
+                            Premium <br/> <span className="text-blue-200">Flagships.</span>
+                        </h1>
+                        <p className="text-blue-50 text-xs lg:text-sm font-bold leading-relaxed max-w-sm italic">
+                            Authorized iPhone & Samsung dealer. Explore factory-sealed and Grade-A UK Used hardware.
+                        </p>
+                    </div>
+                    <div className="absolute right-[-5%] bottom-[-10%] size-[300px] lg:size-[500px] bg-white/10 rounded-full blur-[100px]" />
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
+                    {/* --- SIDEBAR --- */}
+                    <aside className="hidden lg:block w-72 shrink-0">
+                        <ProductSidebar 
+                            selectedCats={selectedFilters} 
                             onCatChange={toggleFilter} 
-                            onReset={() => setSelectedBrands([])} 
-                            // Pass brands to sidebar if it supports dynamic labels
+                            onReset={() => setSelectedFilters([])}
+                            activeCategory="Phone" 
                         />
                     </aside>
 
                     <main className="flex-1">
-                        <div className="flex justify-between items-center mb-10">
+                        <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900">Smartphone Catalog</h2>
-                                <p className="text-xs text-gray-400 font-bold uppercase mt-1">Showing {filteredItems.length} Devices</p>
+                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">
+                                    The Elite Index.
+                                </h2>
+                                <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
+                                    {filteredItems.length} Handsets Available
+                                </p>
                             </div>
-                            
-                            {/* Simple Mobile Filter Indicator */}
-                            {selectedBrands.length > 0 && (
-                                <button 
-                                    onClick={() => setSelectedBrands([])}
-                                    className="text-[10px] font-bold text-red-500 bg-red-50 px-3 py-1 rounded-full uppercase"
-                                >
-                                    Clear Filters ({selectedBrands.length})
-                                </button>
-                            )}
                         </div>
 
+                        {/* --- SMART GRID: 2 COLUMNS ON PHONE --- */}
                         {filteredItems.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12">
+                            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
-                                    <AccessoryCard key={item.id} item={item} />
+                                    <ProductCard key={item.id} item={item} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-20 text-center bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-100">
-                                <p className="text-gray-400 font-medium">No smartphones match your current filters.</p>
-                                <button onClick={() => setSelectedBrands([])} className="mt-4 text-[#0070f3] font-bold text-sm">Reset all filters</button>
+                            <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
+                                <SmartphoneNfc size={40} className="text-gray-300 mb-4" />
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">Signal Lost: No Matches</p>
+                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Reset Protocol</button>
                             </div>
                         )}
 
-                        {/* Pagination */}
+                        {/* --- PAGINATION --- */}
                         {totalPages > 1 && (
-                            <div className="mt-16 flex justify-center gap-2">
+                            <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
                                 {[...Array(totalPages)].map((_, i) => (
                                     <button
                                         key={i}
-                                        onClick={() => setCurrentPage(i + 1)}
-                                        className={`size-10 rounded-xl font-bold transition-all ${
+                                        onClick={() => {
+                                            setCurrentPage(i + 1);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all text-[10px] lg:text-xs ${
                                             currentPage === i + 1 
-                                            ? "bg-[#0070f3] text-white shadow-lg shadow-blue-500/30" 
-                                            : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                                            ? "bg-[#0070f3] text-white shadow-xl" 
+                                            : "bg-gray-50 dark:bg-white/5 text-gray-400"
                                         }`}
                                     >
                                         {i + 1}

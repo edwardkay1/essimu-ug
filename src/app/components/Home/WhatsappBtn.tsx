@@ -2,32 +2,39 @@
 import { MessageSquare } from "lucide-react";
 
 export default function WhatsappBtn() {
-    return (
-        <div className="fixed bottom-8 right-8 z-[90] flex items-center justify-center">
-            {/* Pulsing "Live" Effect Rings */}
-            <span className="absolute size-20 bg-[#25D366]/20 rounded-full animate-ping pointer-events-none" />
-            <span className="absolute size-16 bg-[#25D366]/40 rounded-full animate-pulse pointer-events-none" />
+    const whatsappNumber = "256756922058";
+    
+    const handleLaunchSync = () => {
+        const message = encodeURIComponent("Hello Essimu Uganda, I'm interested in the tech deals at Shop B118. Please send current stock and pricing.");
+        window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+    };
 
-            {/* Main Button */}
+    return (
+        <div className="fixed bottom-8 right-8 z-[150] flex items-center justify-center group">
+            {/* --- LIVE STATUS RINGS --- */}
+            <span className="absolute size-24 bg-[#25D366]/10 rounded-full animate-ping pointer-events-none" />
+            <span className="absolute size-16 bg-[#25D366]/30 rounded-full animate-pulse pointer-events-none" />
+
+            {/* --- HOVER TOOLTIP (Sales Trigger) --- */}
+            <div className="absolute bottom-20 right-0 bg-gray-900 text-white text-[9px] font-black uppercase tracking-[0.2em] py-2.5 px-5 rounded-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-2xl whitespace-nowrap border border-white/10">
+                <span className="text-[#25D366]">Online:</span> Sync with B118 Hub
+            </div>
+
+            {/* --- MAIN INTERFACE BUTTON --- */}
             <button 
-                onClick={() => window.open('https://wa.me/256700000000', '_blank')} 
-                className="relative w-16 h-16 bg-[#25D366] text-white rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.4)] flex items-center justify-center hover:bg-[#128C7E] hover:scale-110 active:scale-90 transition-all duration-300 group overflow-hidden"
-                aria-label="Direct WhatsApp Sync"
+                onClick={handleLaunchSync} 
+                className="relative w-16 h-16 bg-[#25D366] text-white rounded-[1.5rem] shadow-[0_15px_45px_rgba(37,211,102,0.5)] flex items-center justify-center hover:bg-[#128C7E] hover:rotate-[360deg] transition-all duration-700 overflow-hidden"
+                aria-label="Direct Essimu Sales Sync"
             >
-                {/* Glossy Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none" />
+                {/* Premium Glossy Finish */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/20 pointer-events-none" />
                 
-                {/* Icon (Switched to Lucide for consistency with your other icons) */}
+                {/* WhatsApp/Message Icon */}
                 <MessageSquare 
-                    size={30} 
-                    className="relative z-10 fill-white group-hover:rotate-12 transition-transform duration-300" 
+                    size={28} 
+                    className="relative z-10 fill-white stroke-none group-hover:scale-110 transition-transform" 
                     aria-hidden="true" 
                 />
-
-                {/* Subtle "Direct" Tooltip that appears on hover */}
-                <div className="absolute -top-12 right-0 bg-gray-900 text-white text-[9px] font-black uppercase tracking-widest py-2 px-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    Protocol: Direct Sync
-                </div>
             </button>
         </div>
     );
