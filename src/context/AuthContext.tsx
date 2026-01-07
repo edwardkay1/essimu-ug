@@ -5,8 +5,7 @@ import {
   User, 
   signInWithEmailAndPassword, 
   signOut,
-  signInWithPopup,
-  GoogleAuthProvider 
+  UserCredential
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -14,7 +13,8 @@ import { auth } from "@/lib/firebase";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: typeof signInWithEmailAndPassword; // The function you were missing
+  // Explicitly define 2 arguments to match your implementation
+  login: (email: string, pass: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
 }
 
@@ -33,7 +33,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  // 3. Define the actual logic for login and logout
+  // 3. Logic for login and logout
+  // We handle the 'auth' instance here so the UI doesn't have to
   const login = (email: string, pass: string) => {
     return signInWithEmailAndPassword(auth, email, pass);
   };
