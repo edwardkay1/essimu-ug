@@ -1,6 +1,7 @@
 "use client";
+
 import { useState } from "react";
-import { Wrench, Smartphone, Monitor, Zap, CheckCircle2, MessageSquare, Clock, Shield, X, MapPin } from "lucide-react";
+import { Wrench, Zap, Shield, CheckCircle2, MessageSquare, MapPin, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -14,8 +15,8 @@ export default function RepairPage() {
 
     const handleWhatsAppSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const phone = "256756922058"; // Essimu Official Line
-        const message = `*SERVICE SYNC REQUEST*\n--------------------------\n*Device:* ${formData.device}\n*Model:* ${formData.model}\n*Issue:* ${formData.issue}\n--------------------------\n_Sent via ESSIMU Repair Portal_`;
+        const phone = "256756922058"; 
+        const message = `*ESSIMU REPAIR REQUEST*\n--------------------------\n*Device:* ${formData.device}\n*Model:* ${formData.model}\n*Issue:* ${formData.issue}\n--------------------------\n_Sent via ESSIMU Repair Page_`;
         
         const encodedMessage = encodeURIComponent(message);
         window.open(`https://wa.me/${phone}?text=${encodedMessage}`, "_blank");
@@ -34,14 +35,14 @@ export default function RepairPage() {
                             <div className="flex items-center gap-2 mb-6">
                                 <Zap size={14} className="text-[#0070f3] fill-[#0070f3]" />
                                 <span className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em]">
-                                    Certified Technical Hub
+                                    Trusted Repair Hub
                                 </span>
                             </div>
                             <h1 className="text-6xl lg:text-8xl font-black text-gray-900 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase">
-                                Hardware <br/> <span className="text-gray-400">Failure?</span>
+                                Phone or Laptop <br/> <span className="text-gray-400">Not Working?</span>
                             </h1>
                             <p className="text-gray-500 dark:text-gray-400 font-bold text-lg max-w-md leading-relaxed italic">
-                                High-precision engineering for iPhones, MacBooks, and premium displays. Synchronize with our Shop B118 technicians.
+                                Fast, reliable repairs for phones, laptops, and TVs. Visit Shop B118 in Kampala or contact us directly on WhatsApp.
                             </p>
                         </div>
 
@@ -50,27 +51,27 @@ export default function RepairPage() {
                                 onClick={() => setIsModalOpen(true)}
                                 className="flex items-center justify-center gap-4 px-10 py-6 bg-[#0070f3] text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-blue-500/20 hover:scale-105 transition-all"
                             >
-                                <Wrench size={18} /> Request Service Sync
+                                <Wrench size={18} /> Request Repair
                             </button>
                             <div className="flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                                 <MapPin size={18} className="text-[#0070f3]" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kisa Kyamaria B118</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Shop B118, Kampala</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Standard Card */}
+                    {/* Standards Card */}
                     <div className="relative group">
                         <div className="absolute inset-0 bg-blue-600 rounded-[3.5rem] blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
                         <div className="relative bg-[#0a0a0a] rounded-[3.5rem] p-12 text-white border border-white/5 shadow-3xl">
                              <h3 className="text-2xl font-black mb-10 uppercase tracking-tighter flex items-center gap-3">
-                                <Shield className="text-[#0070f3]" /> B118 Repair Standards
+                                <Shield className="text-[#0070f3]" /> Our Promise
                             </h3>
                             <div className="space-y-8">
                                 {[
-                                    { label: "Express Diagnostics", sub: "Under 30 minutes" },
-                                    { label: "90 Day Tech Warranty", sub: "On all replaced modules" },
-                                    { label: "OEM Grade Parts", sub: "Original Apple/Samsung Stock" }
+                                    { label: "Quick Checks", sub: "Most repairs under 30 minutes" },
+                                    { label: "90-Day Warranty", sub: "All replaced parts covered" },
+                                    { label: "Original Parts", sub: "Apple, Samsung & LG verified" }
                                 ].map((item) => (
                                     <div key={item.label} className="flex items-start gap-5">
                                         <div className="size-6 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
@@ -90,9 +91,9 @@ export default function RepairPage() {
                 {/* --- SERVICE STEPS --- */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
                     {[
-                        { step: "01", title: "Initialize", desc: "Submit your device details via the Service Sync portal." },
-                        { step: "02", title: "Assessment", desc: "Bring your gear to Shop B118 or request a pickup." },
-                        { step: "03", title: "Restoration", desc: "Hardware is restored to factory specs within 24-48 hours." }
+                        { step: "01", title: "Send Info", desc: "Tell us your device and problem." },
+                        { step: "02", title: "Drop at Shop", desc: "Bring your device to Shop B118 or schedule a pickup." },
+                        { step: "03", title: "Device Fixed", desc: "We repair quickly and safely with original parts." }
                     ].map((s) => (
                         <div key={s.step} className="p-10 bg-gray-50 dark:bg-[#111111] rounded-[2.5rem] border border-gray-100 dark:border-white/5">
                             <span className="text-4xl font-black text-[#0070f3]/20 mb-6 block">{s.step}</span>
@@ -105,7 +106,7 @@ export default function RepairPage() {
 
             {/* --- REPAIR MODAL --- */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center px-6">
+                <div className="fixed inset-0 z-[200] flex items-center justify-center px-6" role="dialog" aria-modal="true">
                     <div 
                         className="absolute inset-0 bg-gray-900/80 backdrop-blur-xl"
                         onClick={() => setIsModalOpen(false)}
@@ -115,8 +116,12 @@ export default function RepairPage() {
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-10">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Service Sync</h2>
-                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Assigning Hardware Tech...</p>
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
+                                    <Shield /> Request Repair
+                                </h2>
+                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                                    Our technicians will contact you quickly.
+                                </p>
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="p-3 bg-gray-100 dark:bg-white/5 rounded-2xl hover:scale-110 transition-all dark:text-white">
                                 <X size={20} />
@@ -125,22 +130,22 @@ export default function RepairPage() {
 
                         <form onSubmit={handleWhatsAppSubmit} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Hardware Sector</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Device Type</label>
                                 <select 
                                     required
                                     className="w-full bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all dark:text-white"
                                     onChange={(e) => setFormData({...formData, device: e.target.value})}
                                 >
-                                    <option value="">Select Category...</option>
-                                    <option value="iPhone">iPhone / Smartphone</option>
-                                    <option value="Laptop">MacBook / PC Laptop</option>
-                                    <option value="TV">Smart TV / Monitor</option>
-                                    <option value="Other">Other Hardware</option>
+                                    <option value="">Choose Device...</option>
+                                    <option value="iPhone">Phone</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="TV">TV / Monitor</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Model Specifications</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Model</label>
                                 <input 
                                     required
                                     placeholder="e.g. MacBook Pro M2 14-inch"
@@ -150,10 +155,10 @@ export default function RepairPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Fault Description</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Problem Description</label>
                                 <textarea 
                                     required
-                                    placeholder="Briefly describe the hardware failure..."
+                                    placeholder="Describe the issue in simple words"
                                     rows={3}
                                     className="w-full bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 p-4 rounded-2xl text-sm font-bold outline-none focus:border-blue-600 transition-all resize-none dark:text-white"
                                     onChange={(e) => setFormData({...formData, issue: e.target.value})}
@@ -164,7 +169,7 @@ export default function RepairPage() {
                                 type="submit"
                                 className="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
                             >
-                                <MessageSquare size={18} /> Launch Technical Sync
+                                <MessageSquare size={18} /> Contact Technician
                             </button>
                         </form>
                     </div>
