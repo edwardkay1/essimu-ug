@@ -1,38 +1,58 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { 
     Plus, X, Smartphone, Laptop, Tv, 
-    Headphones, Info, MousePointer2, 
-    ListChecks, ShieldCheck, ChevronRight, 
-    Activity, LayoutGrid, Database, Zap
+    Headphones, ListChecks, ShieldCheck, ChevronRight, 
+    Activity, LayoutGrid, Database, Zap, Edit3, TrendingUp
 } from "lucide-react";
 import StatCard from "./components/StatCard";
 import ProductForm from "./components/ProductForm";
-import { products } from "./data"; 
+import { db } from "@/lib/firebase"; 
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 export default function AdminDashboard() {
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const [liveProducts, setLiveProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // --- DYNAMIC DATA CALCULATION ---
-    // This looks at your data.ts and counts how many items are in each category
+    // --- REAL-TIME DATA SYNC ---
+    useEffect(() => {
+        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setLiveProducts(items);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    // --- DYNAMIC ANALYTICS ---
     const stats = useMemo(() => {
-        return {
-            phones: products.filter(p => p.category === "Phone").length,
-            laptops: products.filter(p => p.category === "Laptop").length,
-            accessories: products.filter(p => p.category === "Accessory").length,
-            tvs: products.filter(p => p.category === "TV").length,
-            total: products.length
-        };
-    }, []);
+        const totalVal = liveProducts.reduce((acc, curr) => 
+            acc + (Number(curr.price || 0) * Number(curr.stock || 0)), 0
+        );
 
-    const recentItems = useMemo(() => {
-        return [
-            ...products.filter(p => p.category === "Phone").slice(-2),
-            ...products.filter(p => p.category === "Laptop").slice(-2),
-            ...products.filter(p => p.category === "TV").slice(-2),
-            ...products.filter(p => p.category === "Accessory").slice(-2)
-        ].reverse();
-    }, []);
+        return {
+            // Matches the button values in your ProductForm
+            phones: liveProducts.filter(p => p.category === "Phone").length,
+            laptops: liveProducts.filter(p => p.category === "Laptop").length,
+            accessories: liveProducts.filter(p => p.category === "Accessory").length,
+            tvs: liveProducts.filter(p => p.category === "TV").length,
+            inventoryValue: totalVal,
+            totalItems: liveProducts.length
+        };
+    }, [liveProducts]);
+
+    const handleEdit = (product: any) => {
+        setSelectedProduct(product);
+        setIsFormOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsFormOpen(false);
+        setSelectedProduct(null);
+    };
 
     return (
         <div className="max-w-7xl mx-auto relative pb-20 px-6 min-h-screen transition-colors duration-500 bg-white dark:bg-[#0a0a0a]">
@@ -42,34 +62,31 @@ export default function AdminDashboard() {
                 <div className="animate-in fade-in slide-in-from-left duration-700">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
-                        <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                            Node: Shop B118 / Online
+                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                            Node: Shop B118 / Cloud Sync Active
                         </span>
                     </div>
-                    <h1 className="text-4xl lg:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase leading-none">
+                    <h1 className="text-4xl lg:text-6xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">
                         Command <span className="text-[#0070f3]">Hub</span>
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 font-semibold mt-2 text-sm tracking-tight">
-                        Root access active. Monitoring <span className="text-gray-900 dark:text-white font-bold">ESSIMU Kampala</span> live catalog.
-                    </p>
                 </div>
                 
                 <button 
-                    onClick={() => setIsFormOpen(true)}
-                    className="group flex items-center gap-3 px-8 py-5 bg-[#0070f3] text-white rounded-[2rem] text-[10px] font-extrabold uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/30 active:scale-95"
+                    onClick={() => { setSelectedProduct(null); setIsFormOpen(true); }}
+                    className="group flex items-center gap-4 px-10 py-6 bg-[#0070f3] text-white rounded-[2.5rem] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-2xl shadow-blue-500/30 active:scale-95"
                 >
-                    <Plus size={18} className="group-hover:rotate-90 transition-transform duration-500" /> 
-                    Quick Add Unit
+                    <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" /> 
+                    Add Item
                 </button>
             </header>
 
-            {/* --- DYNAMIC STATS GRID (5 Columns) --- */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-16">
-                <StatCard title="Smartphones" value={stats.phones.toString()} trend="Active" variant="primary" icon={Smartphone} />
-                <StatCard title="Laptops" value={stats.laptops.toString()} trend="Active" icon={Laptop} />
-                <StatCard title="Accessories" value={stats.accessories.toString()} trend="Units" icon={Headphones} />
-                <StatCard title="Smart TVs" value={stats.tvs.toString()} trend="Units" icon={Tv} />
-                <StatCard title="Total Units" value={stats.total.toString()} trend="Live" icon={Database} />
+            {/* --- STATS GRID --- */}
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
+                <StatCard title="Phones" value={stats.phones.toString()} trend="Live" variant="primary" icon={Smartphone} />
+                <StatCard title="Laptops" value={stats.laptops.toString()} trend="Units" icon={Laptop} />
+                <StatCard title="Accessories" value={stats.accessories.toString()} trend="Stock" icon={Headphones} />
+                <StatCard title="TVs" value={stats.tvs.toString()} trend="Units" icon={Tv} />
+                <StatCard title="Inventory" value={stats.totalItems.toString()} trend="Global" icon={Database} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -79,97 +96,87 @@ export default function AdminDashboard() {
                     <div className="flex justify-between items-center px-4">
                         <div className="flex items-center gap-3">
                             <Activity size={20} className="text-[#0070f3] animate-pulse" />
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Latest Arrivals</h2>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Recent Arrivals</h2>
                         </div>
-                        <a href="/admin/products" className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 hover:text-[#0070f3] flex items-center gap-2 transition-all group">
-                            Full Catalog <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </a>
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {recentItems.map((item) => (
-                            <div key={item.id} className="bg-white dark:bg-[#111111] p-6 rounded-[2.5rem] border border-gray-200 dark:border-white/5 shadow-sm flex items-center gap-6 hover:shadow-2xl hover:shadow-blue-500/10 transition-all group cursor-pointer border-l-4 border-l-transparent hover:border-l-[#0070f3]">
-                                <div className="relative w-24 h-24 rounded-3xl bg-gray-50 dark:bg-white/[0.03] overflow-hidden shrink-0 border border-gray-100 dark:border-white/5 flex items-center justify-center">
-                                    <div className="text-gray-300 dark:text-white/10 group-hover:text-[#0070f3] group-hover:scale-110 transition-all duration-500">
-                                         {item.category === "Phone" && <Smartphone size={32} strokeWidth={1.5} />}
-                                         {item.category === "Laptop" && <Laptop size={32} strokeWidth={1.5} />}
-                                         {item.category === "TV" && <Tv size={32} strokeWidth={1.5} />}
-                                         {item.category === "Accessory" && <Headphones size={32} strokeWidth={1.5} />}
-                                    </div>
-                                </div>
-                                <div className="min-w-0">
-                                    <span className="text-[9px] font-bold text-[#0070f3] uppercase tracking-wide bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md mb-2 inline-block">
-                                        {item.category}
-                                    </span>
-                                    <h3 className="font-bold text-gray-900 dark:text-white text-[14px] truncate uppercase tracking-tight leading-none mb-2">{item.name}</h3>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-                                            <span className="text-[10px] text-[#0070f3] mr-1">UGX</span>
-                                            {item.price.toLocaleString()}
-                                        </span>
-                                        <span className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wide">{item.brand}</span>
-                                    </div>
-                                </div>
+                        {liveProducts.length === 0 ? (
+                            <div className="col-span-full py-20 flex flex-col items-center opacity-20 border-2 border-dashed border-gray-500 rounded-[3rem]">
+                                <Database size={48} className="mb-4" />
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em]">No Hardware Synced</p>
                             </div>
-                        ))}
+                        ) : (
+                            liveProducts.slice(0, 6).map((item) => (
+                                <div key={item.id} className="group relative bg-white dark:bg-[#111111] p-6 rounded-[3rem] border border-gray-200 dark:border-white/5 shadow-sm flex items-center gap-6 hover:border-l-[#0070f3] border-l-4 border-l-transparent transition-all">
+                                    <div className="relative w-24 h-24 rounded-3xl bg-gray-50 dark:bg-white/[0.03] overflow-hidden flex items-center justify-center shrink-0 border border-gray-100 dark:border-white/5">
+                                        {item.image ? (
+                                            <img src={item.image} alt={item.name} className="object-contain w-full h-full p-2" />
+                                        ) : (
+                                            <div className="text-gray-300 dark:text-white/10"><LayoutGrid size={32}/></div>
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-[7px] font-black uppercase px-2 py-0.5 bg-[#0070f3]/10 text-[#0070f3] rounded-full">{item.category}</span>
+                                            <span className="text-[7px] font-black uppercase px-2 py-0.5 bg-gray-100 dark:bg-white/5 text-gray-400 rounded-full">{item.condition}</span>
+                                        </div>
+                                        <h3 className="font-bold text-gray-900 dark:text-white text-sm truncate uppercase mb-1">{item.name}</h3>
+                                        <p className="text-lg font-black text-gray-900 dark:text-white leading-none">
+                                            <span className="text-[9px] opacity-40 mr-1 font-bold">UGX</span>
+                                            {Number(item.price).toLocaleString()}
+                                        </p>
+                                        <p className="text-[8px] font-bold text-gray-400 mt-2 uppercase">In Stock: {item.stock || 0}</p>
+                                    </div>
+
+                                    {/* QUICK EDIT ACTION */}
+                                    <button 
+                                        onClick={() => handleEdit(item)}
+                                        className="absolute top-4 right-4 p-3 bg-white dark:bg-white/5 text-gray-400 hover:text-[#0070f3] rounded-2xl transition-all opacity-0 group-hover:opacity-100 shadow-xl border border-gray-100 dark:border-white/5"
+                                    >
+                                        <Zap size={16} />
+                                    </button>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
 
-                {/* --- ADMIN GUIDELINES --- */}
-                <div className="space-y-6">
-                    <div className="bg-gray-900 dark:bg-[#161616] rounded-[3.5rem] p-10 text-white shadow-2xl shadow-blue-500/10 border border-white/5 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                            <LayoutGrid size={120} />
-                        </div>
-                        
-                        <div className="flex items-center gap-3 mb-12">
-                            <div className="w-12 h-12 bg-[#0070f3] rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                <ShieldCheck size={24} className="text-white" />
-                            </div>
-                            <div>
-                                <h2 className="font-bold text-lg uppercase tracking-tight leading-none text-white">Security</h2>
-                                <p className="text-[9px] text-[#0070f3] font-bold uppercase tracking-wide mt-1">Owner Protocol</p>
-                            </div>
-                        </div>
-                        
-                        <div className="space-y-8 relative z-10">
-                            <GuideItem 
-                                icon={<ListChecks size={20}/>} 
-                                title="Multi-Wing Control" 
-                                text="Manage all iPhones, MacBooks, and high-end TVs from a single command terminal." 
-                            />
-                            <GuideItem 
-                                icon={<Zap size={20}/>} 
-                                title="Instant Sync" 
-                                text="Price changes and stock counts update live across all displays." 
-                            />
-                            <GuideItem 
-                                icon={<MousePointer2 size={20}/>} 
-                                title="Quick Deploy" 
-                                text="One-click initialization instantly pushes units to the public catalog." 
-                            />
-                        </div>
+                {/* --- OWNER SECURITY PANEL --- */}
+                <div className="sticky top-10 h-fit bg-gray-900 dark:bg-[#161616] rounded-[4rem] p-12 text-white border border-white/5 shadow-2xl overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#0070f3] blur-[80px] opacity-20 -mr-16 -mt-16" />
+                    <div className="flex items-center gap-4 mb-12">
+                        <ShieldCheck size={28} className="text-[#0070f3]" />
+                        <h2 className="font-black text-xl uppercase tracking-tighter text-white">Security<br/>Protocol</h2>
+                    </div>
+                    
+                    <div className="space-y-10">
+                        <GuideItem icon={<Zap size={20}/>} title="Cloud Priority" text="Images optimized via Cloudinary for fast loading on 4G networks in Kampala." />
+                        <GuideItem icon={<ListChecks size={20}/>} title="Audit Trail" text="Changes are synced instantly across all B118 administrative nodes." />
                     </div>
                 </div>
             </div>
 
-            {/* --- ADD UNIT MODAL --- */}
+            {/* --- ADD/EDIT MODAL --- */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-gray-900/90 dark:bg-black/95 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setIsFormOpen(false)} />
-                    <div className="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto bg-white dark:bg-[#111111] rounded-[4rem] shadow-[0_0_100px_-20px_rgba(0,112,243,0.3)] border border-gray-200 dark:border-white/5 animate-in zoom-in-95 duration-300">
-                        <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#111111]/80 backdrop-blur-md p-10 border-b border-gray-200 dark:border-white/5 flex justify-between items-center px-14">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-md">
+                    <div className="absolute inset-0 bg-gray-900/90 transition-opacity" onClick={handleCloseModal} />
+                    <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-white dark:bg-[#0f0f0f] rounded-[4rem] p-12 border border-white/10 shadow-3xl animate-in zoom-in-95 duration-300">
+                        <div className="flex justify-between items-center mb-12">
                             <div>
-                                <h2 className="text-3xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Add Hardware Unit</h2>
-                                <p className="text-[10px] font-bold text-[#0070f3] uppercase tracking-wide mt-1">Authorized Access: B118 Inventory Control</p>
+                                <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                                    {selectedProduct ? "Modify Hardware" : "Add Hardware"}
+                                </h2>
+                                <p className="text-[10px] font-bold text-[#0070f3] uppercase tracking-widest mt-1">Registry: Shop B118</p>
                             </div>
-                            <button onClick={() => setIsFormOpen(false)} className="w-14 h-14 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-500 text-gray-400 rounded-3xl transition-all flex items-center justify-center border border-gray-200 dark:border-white/10">
+                            <button onClick={handleCloseModal} className="p-4 bg-gray-50 dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-950/20 text-gray-400 hover:text-red-500 rounded-3xl transition-all">
                                 <X size={28} />
                             </button>
                         </div>
-                        <div className="p-14">
-                            <ProductForm onSuccess={() => setIsFormOpen(false)} />
-                        </div>
+                        <ProductForm 
+                            initialData={selectedProduct} 
+                            onSuccess={handleCloseModal} 
+                        />
                     </div>
                 </div>
             )}
@@ -179,13 +186,11 @@ export default function AdminDashboard() {
 
 function GuideItem({ icon, title, text }: any) {
     return (
-        <div className="flex gap-6 group">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 text-[#0070f3] flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-[#0070f3] group-hover:text-white transition-all duration-500 shadow-sm">
-                {icon}
-            </div>
+        <div className="flex gap-6">
+            <div className="size-12 rounded-[1.2rem] bg-white/5 flex items-center justify-center text-[#0070f3] shrink-0 border border-white/5">{icon}</div>
             <div>
-                <p className="text-xs font-bold text-white uppercase tracking-wide mb-1">{title}</p>
-                <p className="text-[11px] text-gray-300 leading-relaxed font-semibold tracking-tight italic">{text}</p>
+                <p className="text-xs font-black text-white uppercase tracking-widest mb-2">{title}</p>
+                <p className="text-xs text-gray-500 italic leading-relaxed">{text}</p>
             </div>
         </div>
     );

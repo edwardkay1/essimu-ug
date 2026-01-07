@@ -9,7 +9,7 @@ import {
     X, 
     ChevronRight,
 } from 'lucide-react';
-import { useCart } from "../context/CartContext";
+import { useCart } from "@/context/CartContext";
 import { Order } from "../common/Buttons";
 
 export default function Navbar() {
@@ -39,7 +39,7 @@ export default function Navbar() {
                     {/* Logo Container */}
                     <div className="relative size-11 flex items-center justify-center group-hover:-rotate-6 transition-transform duration-300">
                         <Image 
-                            src="/essimulogo.png" 
+                            src="/Image/essimulogo.png" 
                             alt="Essimu Logo" 
                             width={44} 
                             height={44} 

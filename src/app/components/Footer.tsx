@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image"; // 1. Added Image import
-import { Phone, MapPin, ShieldCheck, Zap } from "lucide-react"; // Removed Smartphone
+import Image from "next/image";
+import { Phone, MapPin, ShieldCheck, Zap } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
     faTiktok, 
@@ -21,13 +21,13 @@ export default function Footer() {
         <footer className="px-6 lg:px-20 pt-24 pb-12 bg-white dark:bg-[#0a0a0a] border-t border-gray-100 dark:border-white/5" role="contentinfo">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
                 
-                {/* --- BRAND INFO --- */}
+                {/* --- BRAND INFO & ADMIN LINK --- */}
                 <div className="flex flex-col gap-6">
-                    <div className="flex items-center gap-3">
-                        {/* 2. Swapped Smartphone Icon for essimulogo.png */}
-                        <div className="relative size-12 flex items-center justify-center transition-transform hover:scale-110">
+                    {/* Wrap the logo and brand in a link to /admin */}
+                    <Link href="/admin" className="flex items-center gap-3 group w-fit">
+                        <div className="relative size-12 flex items-center justify-center transition-transform group-hover:scale-110">
                             <Image 
-                                src="/essimulogo.png" 
+                                src="/Image/essimulogo.png" 
                                 alt="Essimu Logo" 
                                 width={48} 
                                 height={48} 
@@ -35,10 +35,13 @@ export default function Footer() {
                             />
                         </div>
                         <div className="flex flex-col">
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">ESSIMU</h2>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter leading-none group-hover:text-[#0070f3] transition-colors">
+                                ESSIMU
+                            </h2>
                             <span className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.3em]">Uganda Hub</span>
                         </div>
-                    </div>
+                    </Link>
+
                     <p className="text-sm font-bold text-gray-400 dark:text-gray-500 max-w-64 leading-relaxed italic">
                         Your trusted shop for New & UK Used phones, laptops, and accessories in Kampala. Visit Shop B118 for verified stock.
                     </p>
@@ -65,7 +68,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* --- SHOP SECTIONS --- (Rest of your code remains the same) */}
+                {/* --- SHOP SECTIONS --- */}
                 <div>
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white mb-8 border-b border-gray-100 dark:border-white/5 pb-2">Shop</h3>
                     <ul className="flex flex-col gap-5">

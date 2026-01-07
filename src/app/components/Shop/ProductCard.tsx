@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { ShoppingCart, Zap, BadgeCheck } from "lucide-react";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "@/context/CartContext";
 
 export default function AccessoryCard({ item, index }: { item: any, index?: number }) {
     const { addToCart } = useCart();

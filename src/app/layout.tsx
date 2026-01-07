@@ -1,35 +1,27 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "../context/CartContext";
+import { AuthProvider } from "@/context/AuthContext"; // 1. Import AuthProvider
 
 export const metadata: Metadata = {
-  // SEO: 'Essimu' used as brand and primary keyword
   title: {
     default: "Essimu Uganda | New & UK Used Phones, Laptops & Repair Hub",
     template: "%s | Essimu Uganda"
   },
   description: "Buy New and UK Used phones (Essimu), Laptops, and TVs at Essimu Uganda. Visit Shop B118 Kisa Kyamaria, William Street, Kampala for the best tech deals and professional repairs.",
-  keywords: [
-    "Essimu", 
-    "Essimu Uganda", 
-    "UK Used iPhones Kampala", 
-    "Shop B118 Kisa Kyamaria", 
-    "William Street phone shops", 
-    "Buy laptops Uganda", 
-    "Essimu enkadde", 
-    "Essimu empya"
-  ],
-  // --- ADDED ICONS SECTION ---
+  keywords: ["Essimu", "Essimu Uganda", "UK Used iPhones Kampala", "Shop B118 Kisa Kyamaria", "William Street phone shops", "Buy laptops Uganda", "Essimu enkadde", "Essimu empya"],
+  
+  // --- FIXED ICONS PATHS ---
   icons: {
     icon: [
-      { url: "/Image/essimulogo.png" }, // Standard favicon
+      { url: "/Image/essimulogo.png" }, 
       { url: "/Image/essimulogo.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/Image/essimulogo.png", sizes: "180x180", type: "image/png" }, // For iPhones
+      { url: "/Image/essimulogo.png", sizes: "180x180", type: "image/png" }, 
     ],
   },
-  // ---------------------------
+  
   openGraph: {
     title: "Essimu Uganda | Premium New & UK Used Tech Hub",
     description: "Located at Kisa Kyamaria Shop B118. Your home for verified UK used phones and original laptops.",
@@ -45,7 +37,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // This helps Google Maps connect your website to your physical shop B118
   const businessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -65,16 +56,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* SEO: Script to tell Google exactly where your shop is located */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
         />
       </head>
       <body className="bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white overflow-x-hidden antialiased">
-        <CartProvider>
-          {children}
-        </CartProvider>
+        {/* 2. Wrap with AuthProvider so the 'loading' state works on the Home page */}
+        <AuthProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

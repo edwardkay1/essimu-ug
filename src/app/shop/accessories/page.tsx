@@ -1,22 +1,47 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { products } from "../../admin/data"; 
+// --- FIREBASE IMPORTS ---
+import { db } from "@/lib/firebase"; 
+import { collection, onSnapshot, query, where, orderBy } from "firebase/firestore";
+// ------------------------
 import AccessorySidebar from "../../components/Shop/ProductSidebar";
 import AccessoryCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { Sparkles, ChevronRight, PackageSearch, Search, X } from "lucide-react";
+import { Sparkles, ChevronRight, PackageSearch, Search, X, Loader2 } from "lucide-react";
 
 export default function AccessoriesPage() {
-    const accessoriesData = useMemo(() => 
-        products.filter(p => p.category === "Accessory"), 
-    []);
-
+    const [accessories, setAccessories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 12;
+
+    // --- LIVE CLOUD FETCH ---
+    useEffect(() => {
+        // Query only products where category is "Accessory"
+        const q = query(
+            collection(db, "products"),
+            where("category", "==", "Accessory"),
+            orderBy("createdAt", "desc")
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const items = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setAccessories(items);
+            setLoading(false);
+        }, (error) => {
+            console.error("Cloud Fetch Error:", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const toggleFilter = (filter: string) => {
         setSelectedFilters(prev => 
@@ -25,20 +50,19 @@ export default function AccessoriesPage() {
         setCurrentPage(1); 
     };
 
-    // --- SEARCH & FILTER LOGIC ---
+    // --- SEARCH & FILTER LOGIC (Now uses live state) ---
     const filteredItems = useMemo(() => {
-        return accessoriesData.filter(item => {
+        return accessories.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                  item.brand.toLowerCase().includes(searchQuery.toLowerCase());
             
             const matchesFilter = selectedFilters.length === 0 || 
                                  selectedFilters.includes(item.brand) || 
-                                 selectedFilters.includes(item.condition) ||
-                                 (item.subCategory && selectedFilters.includes(item.subCategory));
+                                 selectedFilters.includes(item.condition);
 
             return matchesSearch && matchesFilter;
         });
-    }, [selectedFilters, searchQuery, accessoriesData]);
+    }, [selectedFilters, searchQuery, accessories]);
 
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
     const currentItems = filteredItems.slice(
@@ -64,23 +88,14 @@ export default function AccessoriesPage() {
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-[#0070f3] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-blue-500/10"
                     />
-                    {searchQuery && (
-                        <button 
-                            onClick={() => setSearchQuery("")}
-                            className="absolute inset-y-0 right-6 flex items-center text-gray-400 hover:text-red-500"
-                        >
-                            <X size={18} />
-                        </button>
-                    )}
                 </div>
 
-                {/* --- BREADCRUMBS --- */}
-                <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
+                {/* --- NAVIGATION --- */}
+                <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10">
                     <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-[#0070f3]">Accessories</span>
+                    <span className="text-[#0070f3]">Accessory Registry</span>
                 </nav>
-
                 {/* --- HERO BANNER --- */}
                 <div className="bg-[#0a0a0a] rounded-[2.5rem] lg:rounded-[3.5rem] p-8 lg:p-16 mb-12 lg:mb-16 text-white relative overflow-hidden flex items-center border border-white/5 shadow-2xl">
                     <div className="relative z-10 max-w-xl">
@@ -91,11 +106,7 @@ export default function AccessoriesPage() {
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
                             Complete <br/> Your <span className="text-gray-500">Setup</span>
                         </h1>
-                        <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-sm italic">
-                            Authorized chargers, cables, and audio accessories ready for your devices.
-                        </p>
                     </div>
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#0070f3]/10 to-transparent pointer-events-none" />
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
@@ -109,50 +120,57 @@ export default function AccessoriesPage() {
                     </aside>
 
                     <main className="flex-1">
-                        <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
-                            <div>
-                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Catalog</h2>
-                                <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Units Available
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* --- ACCESSORY GRID --- */}
-                        {filteredItems.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
-                                {currentItems.map(item => (
-                                    <AccessoryCard key={item.id} item={item} />
-                                ))}
+                        {loading ? (
+                            <div className="py-24 flex flex-col items-center justify-center gap-4">
+                                <Loader2 className="animate-spin text-[#0070f3]" size={40} />
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Syncing with B118 Cloud...</p>
                             </div>
                         ) : (
-                            <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
-                                <PackageSearch size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Accessories Found</p>
-                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Reset Catalog</button>
-                            </div>
-                        )}
+                            <>
+                                <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
+                                    <div>
+                                        <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Catalog</h2>
+                                        <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
+                                            {filteredItems.length} Accessories Found
+                                        </p>
+                                    </div>
+                                </div>
 
-                        {/* --- PAGINATION --- */}
-                        {totalPages > 1 && (
-                            <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => {
-                                            setCurrentPage(i + 1);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all text-[10px] lg:text-xs ${
-                                            currentPage === i + 1 
-                                            ? "bg-[#0070f3] text-white shadow-xl" 
-                                            : "bg-gray-50 dark:bg-white/5 text-gray-400"
-                                        }`}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                            </div>
+                                {filteredItems.length > 0 ? (
+                                    <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
+                                        {currentItems.map(item => (
+                                            <AccessoryCard key={item.id} item={item} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
+                                        <PackageSearch size={40} className="text-gray-300 mb-4" />
+                                        <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Accessories Found</p>
+                                    </div>
+                                )}
+
+                                {/* --- PAGINATION --- */}
+                                {totalPages > 1 && (
+                                    <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
+                                        {[...Array(totalPages)].map((_, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => {
+                                                    setCurrentPage(i + 1);
+                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                }}
+                                                className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all text-[10px] lg:text-xs ${
+                                                    currentPage === i + 1 
+                                                    ? "bg-[#0070f3] text-white shadow-xl" 
+                                                    : "bg-gray-50 dark:bg-white/5 text-gray-400"
+                                                }`}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </main>
                 </div>

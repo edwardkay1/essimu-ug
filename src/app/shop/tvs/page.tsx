@@ -1,20 +1,47 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { products } from "../../admin/data"; 
+// --- FIREBASE IMPORTS ---
+import { db } from "@/lib/firebase"; 
+import { collection, onSnapshot, query, where, orderBy } from "firebase/firestore";
+// ------------------------
 import ProductSidebar from "../../components/Shop/ProductSidebar";
 import ProductCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { Monitor, ChevronRight, Tv, Play, Cast, Search, X } from "lucide-react";
+import { Monitor, ChevronRight, Tv, Play, Cast, Search, X, Loader2 } from "lucide-react";
 
 export default function TelevisionsPage() {
-    const tvData = useMemo(() => products.filter(p => p.category === "TV"), []);
-
+    const [tvs, setTvs] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 12;
+
+    // --- LIVE CLOUD SYNC ---
+    useEffect(() => {
+        // Leverages the index: category (Asc) + createdAt (Desc)
+        const q = query(
+            collection(db, "products"),
+            where("category", "==", "TV"), // Matches the value from your Admin Form
+            orderBy("createdAt", "desc")
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const items = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setTvs(items);
+            setLoading(false);
+        }, (error) => {
+            console.error("TV Sync Error:", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const toggleFilter = (filter: string) => {
         setSelectedFilters(prev => 
@@ -23,8 +50,9 @@ export default function TelevisionsPage() {
         setCurrentPage(1); 
     };
 
+    // --- CLIENT-SIDE SEARCH & FILTER ---
     const filteredItems = useMemo(() => {
-        return tvData.filter(item => {
+        return tvs.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                  item.brand.toLowerCase().includes(searchQuery.toLowerCase());
             
@@ -34,7 +62,7 @@ export default function TelevisionsPage() {
 
             return matchesSearch && matchesFilter;
         });
-    }, [selectedFilters, searchQuery, tvData]);
+    }, [selectedFilters, searchQuery, tvs]);
 
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
     const currentItems = filteredItems.slice(
@@ -60,21 +88,13 @@ export default function TelevisionsPage() {
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-indigo-500 rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-indigo-500/10"
                     />
-                    {searchQuery && (
-                        <button 
-                            onClick={() => setSearchQuery("")}
-                            className="absolute inset-y-0 right-6 flex items-center text-gray-400 hover:text-red-500"
-                        >
-                            <X size={18} />
-                        </button>
-                    )}
                 </div>
 
                 {/* --- NAVIGATION --- */}
                 <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
                     <Link href="/" className="text-gray-400 hover:text-indigo-500 transition-colors">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-indigo-600">TVs</span>
+                    <span className="text-indigo-600">TV Registry</span>
                 </nav>
 
                 {/* --- HERO BANNER --- */}
@@ -84,18 +104,14 @@ export default function TelevisionsPage() {
                             <div className="bg-indigo-600 p-1 rounded">
                                 <Cast size={12} className="text-white" />
                             </div>
-                            <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">
-                                Smart Entertainment
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">
+                                B118 Visuals
                             </span>
                         </div>
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
-                            TV <br/> <span className="text-indigo-500">Time.</span>
+                            Home <br/> <span className="text-indigo-500">Cinema</span>
                         </h1>
-                        <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-md italic">
-                            Handpicked OLED & HDR smart TVs for the perfect home cinema.
-                        </p>
                     </div>
-                    <div className="absolute -right-20 -bottom-20 w-[300px] lg:w-[500px] bg-indigo-600/10 rounded-full blur-[100px]" />
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
@@ -109,52 +125,54 @@ export default function TelevisionsPage() {
                     </aside>
 
                     <main className="flex-1">
-                        <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
-                            <div>
-                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
-                                    TV Collection <Play size={20} className="text-indigo-600 fill-indigo-600" />
-                                </h2>
-                                <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Models Available
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* --- GRID --- */}
-                        {filteredItems.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
-                                {currentItems.map(item => (
-                                    <ProductCard key={item.id} item={item} />
-                                ))}
+                        {loading ? (
+                            <div className="py-24 flex flex-col items-center justify-center gap-4">
+                                <Loader2 className="animate-spin text-indigo-500" size={40} />
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Syncing Media Inventory...</p>
                             </div>
                         ) : (
-                            <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
-                                <Tv size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No TVs Found</p>
-                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-indigo-600 text-[9px] font-black uppercase tracking-widest">Clear Filters</button>
-                            </div>
-                        )}
+                            <>
+                                <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
+                                    <div>
+                                        <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
+                                            Smart Displays <Play size={20} className="text-indigo-600 fill-indigo-600" />
+                                        </h2>
+                                        <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2">
+                                            {filteredItems.length} Units Ready
+                                        </p>
+                                    </div>
+                                </div>
 
-                        {/* --- PAGINATION --- */}
-                        {totalPages > 1 && (
-                            <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => {
-                                            setCurrentPage(i + 1);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }}
-                                        className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all text-[10px] lg:text-xs ${
-                                            currentPage === i + 1 
-                                            ? "bg-indigo-600 text-white shadow-xl" 
-                                            : "bg-gray-50 dark:bg-white/5 text-gray-400"
-                                        }`}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                            </div>
+                                {filteredItems.length > 0 ? (
+                                    <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
+                                        {currentItems.map(item => (
+                                            <ProductCard key={item.id} item={item} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
+                                        <Tv size={40} className="text-gray-300 mb-4" />
+                                        <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No TVs Found</p>
+                                    </div>
+                                )}
+
+                                {/* --- PAGINATION --- */}
+                                {totalPages > 1 && (
+                                    <div className="mt-20 pt-10 border-t border-gray-100 dark:border-white/5 flex justify-center items-center gap-3 lg:gap-6">
+                                        {[...Array(totalPages)].map((_, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                className={`size-10 lg:size-14 rounded-xl lg:rounded-2xl font-black transition-all ${
+                                                    currentPage === i + 1 ? "bg-indigo-600 text-white shadow-xl" : "bg-gray-50 dark:bg-white/5 text-gray-400"
+                                                }`}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </main>
                 </div>
