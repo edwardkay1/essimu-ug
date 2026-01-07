@@ -9,16 +9,16 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
-// 1. Define what the Auth Context should hold
+// Define a specific type for our login to avoid inheriting the 3-arg Firebase type
+type LoginFunction = (email: string, pass: string) => Promise<UserCredential>;
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  // Explicitly define 2 arguments to match your implementation
-  login: (email: string, pass: string) => Promise<UserCredential>;
+  login: LoginFunction; 
   logout: () => Promise<void>;
 }
 
-// 2. Initialize context with the correct type
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -33,9 +33,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  // 3. Logic for login and logout
-  // We handle the 'auth' instance here so the UI doesn't have to
-  const login = (email: string, pass: string) => {
+  // Implementation matches the 2-arg 'LoginFunction' type
+  const login: LoginFunction = (email, pass) => {
     return signInWithEmailAndPassword(auth, email, pass);
   };
 
@@ -44,14 +43,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    // 4. Pass the functions into the provider value
     <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// 5. Custom hook for easy access
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
