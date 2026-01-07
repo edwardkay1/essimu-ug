@@ -6,31 +6,31 @@ const testimonials = [
     id: 1,
     name: "Allison O'Holleran",
     location: "Kampala, Central",
-    content: "We were delighted with how the team handled our hardware procurement. The UK Used iPhones were in pristine condition, exactly as promised.",
+    content: "Bought a UK Used iPhone from Essimu — battery checked, genuine, and exactly as described. Quick WhatsApp ordering too!",
   },
   {
     id: 2,
     name: "Robin Noguier",
     location: "Entebbe, Wakiso",
-    content: "Essimu is a great hub for reliable electronics. The warranty support in Kampala is unmatched, making them my go-to for Sony displays.",
+    content: "Essimu is my go-to shop for reliable electronics. Warranty support is solid, and I trust their stock 100%.",
   },
   {
     id: 3,
     name: "John Musoke",
     location: "Mbarara City",
-    content: "Fast delivery to Mbarara and excellent customer service. The MacBook Pro I bought is performing perfectly for my dev work.",
+    content: "Fast delivery to Mbarara and excellent support. My MacBook Pro is performing perfectly. Shop B118 really delivers on promises.",
   },
   {
     id: 4,
     name: "Sarah Namuli",
     location: "Jinja, Eastern",
-    content: "Finally found a place in Uganda that sells genuine Apple accessories with verified stock. Highly recommend Shop B118.",
+    content: "Finally, a place in Uganda selling verified Apple accessories. Battery-checked and original. Highly recommend visiting Shop B118.",
   },
   {
     id: 5,
     name: "David Okello",
     location: "Gulu City",
-    content: "The trade-in process was seamless. I upgraded my Samsung S22 to an S24 Ultra with a very fair valuation. Best tech shop in KLA.",
+    content: "Seamless trade-in for my Samsung S22 to S24 Ultra. Fair valuation and genuine phones. Best tech shop in Kampala!",
   }
 ];
 
@@ -39,18 +39,16 @@ export default function Testimonials() {
     <section className="py-24 bg-gray-50 dark:bg-[#08080a] overflow-hidden">
       <div className="px-6 lg:px-20 mb-16">
         <div className="max-w-xl">
-          <p className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em] mb-4">Community</p>
+          <p className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em] mb-4">Our Customers</p>
           <h2 className="text-5xl lg:text-7xl font-black text-gray-900 dark:text-white leading-[0.9] tracking-tighter uppercase">
-            What people say <br/> <span className="text-gray-400">about us?</span>
+            Real Stories <br/> <span className="text-gray-400">from Kampala buyers</span>
           </h2>
         </div>
       </div>
 
-      {/* --- SEAMLESS HORIZONTAL AUTO-SCROLLER --- */}
+      {/* --- HORIZONTAL AUTO-SCROLLER --- */}
       <div className="flex overflow-hidden group select-none">
-        {/* This div moves the cards */}
         <div className="flex flex-nowrap gap-8 animate-marquee-slow group-hover:pause-animation">
-          {/* We map twice to ensure the loop never shows a gap */}
           {[...testimonials, ...testimonials].map((t, index) => (
             <div 
               key={`${t.id}-${index}`} 

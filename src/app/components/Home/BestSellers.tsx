@@ -19,14 +19,12 @@ const BestSellers = () => {
         
         return categories.map(cat => {
             const catProducts = products.filter(p => p.category === cat);
-            if (catProducts.length === 0) return null;
+            if (!catProducts.length) return null;
             return catProducts[Math.floor(Math.random() * catProducts.length)];
-        }).filter((p): p is any => p !== null); 
+        }).filter((p): p is any => p !== null);
     }, []);
 
-    if (!hasHydrated) {
-        return <BestSellersSkeleton />;
-    }
+    if (!hasHydrated) return <BestSellersSkeleton />;
 
     return (
         <section className="py-24 px-6 lg:px-20 bg-white dark:bg-[#0a0a0a]" aria-labelledby="trending-heading">
@@ -36,35 +34,35 @@ const BestSellers = () => {
                     <div className="flex items-center gap-2 mb-4">
                         <Zap size={14} className="text-[#0070f3] fill-[#0070f3]" />
                         <span className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em]">
-                            Essimu Market Sync
+                            Essimu Hot Picks
                         </span>
                     </div>
                     <h2 id="trending-heading" className="text-5xl lg:text-7xl font-black text-gray-900 dark:text-white leading-[0.85] tracking-tighter uppercase">
-                        Trending <br/> <span className="text-[#0070f3]">Top Deals.</span>
+                        Trending <br/> <span className="text-[#0070f3]">Top Deals!</span>
                     </h2>
                 </div>
                 <div className="hidden md:block text-right">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Handpicked Luxury</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Handpicked Gems</p>
                     <p className="text-sm font-bold text-gray-900 dark:text-gray-400 italic">
-                        Premium hardware for Kampala's elite.
+                        Grab the best New & UK Used hardware in Kampala now.
                     </p>
                 </div>
             </div>
 
-            {/* --- PRODUCT PORTAL GRID --- */}
+            {/* --- PRODUCT GRID --- */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                 {trendingPicks.map((product, index) => (
                     <div key={product.id} className="group relative flex flex-col h-full">
                         
-                        {/* --- IMAGE PORTAL (Edge-to-Edge) --- */}
+                        {/* --- IMAGE PORTAL --- */}
                         <div className="relative w-full aspect-[3/4] rounded-[2.5rem] overflow-hidden mb-8 shadow-sm bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/5 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-blue-500/30 group-hover:-translate-y-2">
                             
-                            {/* Badges Overlay */}
+                            {/* Badges */}
                             <div className="absolute top-6 left-6 z-20 flex flex-col items-start gap-1">
                                 <div className="bg-[#0070f3] text-white px-3 py-1 rounded-lg flex items-center gap-1 mb-2 shadow-lg">
                                     <BadgeCheck size={10} />
                                     <span className="text-[8px] font-black uppercase tracking-tighter">
-                                        Grade {product.condition}
+                                        {product.condition}
                                     </span>
                                 </div>
                                 <span className="text-3xl font-black text-white tracking-tighter drop-shadow-md opacity-40">
@@ -80,28 +78,28 @@ const BestSellers = () => {
                                 className="object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                             />
 
-                            {/* Gradient Shield */}
+                            {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-70 group-hover:opacity-50 transition-opacity" />
-                            
-                            {/* Hover Portal Action */}
+
+                            {/* Hover CTA */}
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                                 <button 
                                     onClick={() => addToCart(product)}
                                     className="px-8 py-4 bg-[#0070f3] text-white rounded-2xl shadow-2xl scale-90 group-hover:scale-100 transition-transform flex items-center gap-2"
                                 >
                                     <ShoppingCart size={14} strokeWidth={3} />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Sync to Cart</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Grab Deal</span>
                                 </button>
                             </div>
                         </div>
 
-                        {/* --- CONTENT HUB --- */}
+                        {/* --- PRODUCT INFO --- */}
                         <div className="flex justify-between items-start px-2">
                             <div>
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                     <Zap size={8} className="text-[#0070f3] fill-[#0070f3]" />
                                     <span className="text-[8px] font-black text-[#0070f3] uppercase tracking-widest">
-                                        {product.category} deal
+                                        Hot {product.category} Deal
                                     </span>
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-[#0070f3] transition-colors truncate max-w-[180px]">

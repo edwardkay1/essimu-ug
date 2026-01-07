@@ -7,32 +7,32 @@ const faqs = [
     {
         icon: <MessageSquare size={20} />,
         q: "How do I place an order?",
-        a: "Browse our catalog, add items to your cart, and click 'Checkout on WhatsApp'. This syncs your order directly with our sales team at Shop B118, who will finalize payment and delivery with you."
+        a: "Browse the items, add what you want to your cart, then click 'Checkout on WhatsApp'. Our sales team at Shop B118 will finalize your order and delivery."
     },
     {
         icon: <Smartphone size={20} />,
         q: "What does 'UK Used' Grade-A mean?",
-        a: "Grade-A is our highest quality standard for pre-owned Essimu. These devices have zero to minimal scratches, 85%+ battery health, and have passed a 40-point technical hardware sync test."
+        a: "Grade-A devices look almost new, with very few scratches, strong battery health, and are fully tested before sale."
     },
     {
         icon: <ShieldCheck size={20} />,
-        q: "Are the products original?",
-        a: "Absolutely. Whether you are buying New or UK Used, all hardware is verified original stock. We do not deal in clones or refurbished units. Every device is checked against global serial databases."
+        q: "Are the products genuine?",
+        a: "Yes. All our devices, new or used, are original. No fake or cloned units. Every item is checked before sale."
     },
     {
         icon: <Truck size={20} />,
-        q: "What are the delivery timelines?",
-        a: "For orders within Kampala, we offer 'Flash Logistics' (2-4 hours). Upcountry orders (Mbarara, Gulu, Jinja, etc.) are fulfilled within 24-48 hours via our regional transport partners."
+        q: "How long does delivery take?",
+        a: "Inside Kampala: 2-4 hours. Outside the city: 1-2 days, depending on the region."
     },
     {
         icon: <Zap size={20} />,
         q: "Do you offer warranties?",
-        a: "Yes. All new hardware comes with a 1-year manufacturer warranty. Our UK Used Grade-A devices come with a standard Essimu Shop B118 checking warranty to ensure your hardware is friction-free."
+        a: "Yes. New devices have a 1-year warranty. Our top-quality used devices come with a store warranty to make sure they work perfectly."
     },
     {
         icon: <HelpCircle size={20} />,
-        q: "Can I swap my old phone?",
-        a: "We do offer trade-ins/swaps for specific models. Please bring your current device to Kisa Kyamaria Shop B118 for a physical valuation and technical sync."
+        q: "Can I trade in my old phone?",
+        a: "Yes. Bring your old device to Shop B118 for a valuation and swap options."
     }
 ];
 
@@ -41,19 +41,19 @@ export default function FAQPage() {
         <div className="bg-white dark:bg-[#0a0a0a] min-h-screen">
             <Navbar />
             <main className="max-w-[1440px] mx-auto px-6 lg:px-20 py-24">
-                {/* Header Section */}
+                {/* Header */}
                 <div className="mb-20">
                     <div className="flex items-center gap-2 mb-6">
                         <div className="size-2 bg-[#0070f3] rounded-full animate-pulse" />
                         <span className="text-[10px] font-black text-[#0070f3] uppercase tracking-[0.3em]">
-                            Support Intelligence
+                            Support Center
                         </span>
                     </div>
                     <h1 className="text-6xl lg:text-8xl font-black text-gray-900 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase">
                         Knowledge <br/> <span className="text-gray-400">Base.</span>
                     </h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 max-w-lg uppercase tracking-tighter">
-                        Everything you need to know about hardware acquisition at Essimu Uganda.
+                        Everything you need to know about buying and using Essimu devices.
                     </p>
                 </div>
 
@@ -75,20 +75,20 @@ export default function FAQPage() {
                     ))}
                 </div>
 
-                {/* Final CTA / Location Stamp */}
+                {/* Contact / Help Section */}
                 <div className="mt-20 p-12 lg:p-20 bg-gradient-to-br from-[#0a0a0a] to-[#004dc7] rounded-[3.5rem] text-center text-white shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 size-64 bg-white/5 rounded-full blur-3xl" />
                     <div className="relative z-10">
-                        <h4 className="text-3xl lg:text-4xl font-black uppercase mb-4 tracking-tighter">Still have hardware questions?</h4>
+                        <h4 className="text-3xl lg:text-4xl font-black uppercase mb-4 tracking-tighter">Still have questions?</h4>
                         <p className="text-blue-200 font-bold mb-10 italic max-w-md mx-auto">
-                            Direct sales sync is available Mon-Sat, 08:30 - 19:00 EAT at Shop B118.
+                            Contact our sales team directly Mon-Sat, 08:30 - 19:00 EAT at Shop B118.
                         </p>
                         <button 
                             onClick={() => window.open('https://wa.me/256756922058', '_blank')}
                             className="inline-flex items-center gap-4 px-12 py-6 bg-white text-[#0070f3] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 transition-transform"
                         >
                             <MessageSquare size={16} className="fill-[#0070f3]" />
-                            Contact Sales Support
+                            Chat with Sales
                         </button>
                     </div>
                 </div>
