@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-// Swapped ShieldKeyhole for ShieldCheck and added Eye/EyeOff
 import { LogIn, ShieldCheck, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react"; 
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -13,7 +12,8 @@ export default function LoginPage() {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     
-    const { login } = useAuth(); // Ensure your AuthContext has a 'login' function
+    // login now correctly expects (email, password) based on your Context update
+    const { login } = useAuth(); 
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -22,12 +22,15 @@ export default function LoginPage() {
         setIsSubmitting(true);
         
         try {
+            // This call now matches the updated (email, pass) signature in AuthContext
             await login(email, password);
-            // On success, move to the hardware index
+            
+            // Redirect to admin products on successful authentication
             router.push("/admin/products"); 
         } catch (err: any) {
-            console.error(err);
-            setError("Invalid credentials or unauthorized access.");
+            console.error("Auth Error:", err);
+            // specific error message for unauthorized registry access
+            setError("Invalid credentials or unauthorized access to the registry.");
         } finally {
             setIsSubmitting(false);
         }
@@ -77,7 +80,6 @@ export default function LoginPage() {
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                                 placeholder="••••••••"
                             />
-                            {/* --- THE EYE TOGGLE --- */}
                             <button 
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
@@ -90,6 +92,7 @@ export default function LoginPage() {
 
                     <button 
                         disabled={isSubmitting}
+                        type="submit"
                         className="w-full py-5 bg-[#0070f3] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50"
                     >
                         {isSubmitting ? (
