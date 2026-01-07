@@ -45,6 +45,7 @@ export const products: Product[] = [
     { id: 28, name: "LG NanoCell 65\"", category: "TV", brand: "Other", condition: "UK Used", price: 650, stock: 4, image: "/Image/testImage.png", description: "Local Dimming", soldCount: 8 },
     { id: 29, name: "Samsung Neo QLED 75\"", category: "TV", brand: "Samsung", condition: "Brand New", price: 2500, stock: 2, image: "/Image/testImage.png", description: "8K Ultra HD", soldCount: 1 },
     { id: 30, name: "TCL 4-Series 55\"", category: "TV", brand: "Other", condition: "UK Used", price: 250, stock: 9, image: "/Image/testImage.png", description: "Roku TV", soldCount: 50 },
+    { id: 31, name: "TCL 4-Series 55\"", category: "TV", brand: "Other", condition: "UK Used", price: 250, stock: 9, image: "/Image/testImage.png", description: "Roku TV", soldCount: 50 },
     // --- ACCESSORIES (10 Items) ---
     { id: 31, name: "AirPods Pro (2nd Gen)", category: "Accessory", brand: "Apple", condition: "Brand New", price: 249, stock: 20, image: "/Image/testImage.png", description: "Noise Cancelling, MagSafe", soldCount: 85 },
     { id: 32, name: "Samsung 45W Fast Charger", category: "Accessory", brand: "Samsung", condition: "Brand New", price: 35, stock: 50, image: "/Image/testImage.png", description: "USB-C Super Fast Charging", soldCount: 120 },

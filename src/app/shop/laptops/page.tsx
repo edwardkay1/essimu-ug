@@ -6,7 +6,7 @@ import ProductSidebar from "../../components/Shop/ProductSidebar";
 import ProductCard from "../../components/Shop/ProductCard";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { Monitor, ChevronRight, Terminal, Cpu, Search, X } from "lucide-react";
+import { Monitor, ChevronRight, Cpu, Search, X } from "lucide-react";
 
 export default function LaptopsPage() {
     const laptopData = useMemo(() => 
@@ -16,7 +16,7 @@ export default function LaptopsPage() {
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Adjusted for 2-column mobile math
+    const itemsPerPage = 10;
 
     const toggleFilter = (filter: string) => {
         setSelectedFilters(prev => 
@@ -25,7 +25,6 @@ export default function LaptopsPage() {
         setCurrentPage(1); 
     };
 
-    // --- ENHANCED FILTER LOGIC (SEARCH + CATEGORY) ---
     const filteredItems = useMemo(() => {
         return laptopData.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -50,14 +49,15 @@ export default function LaptopsPage() {
             <Navbar />
             
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
-                {/* --- SEARCH BAR: GLOBAL IMPLEMENTATION --- */}
+                
+                {/* --- SEARCH BAR --- */}
                 <div className="relative mb-10 group">
                     <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                         <Search size={18} className="text-gray-400 group-focus-within:text-[#0070f3] transition-colors" />
                     </div>
                     <input 
                         type="text"
-                        placeholder="Search Laptops (e.g. MacBook Pro, HP EliteBook...)"
+                        placeholder="Search Laptops (e.g. MacBook, HP, Dell...)"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-[#0070f3] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-blue-500/10"
@@ -74,23 +74,23 @@ export default function LaptopsPage() {
 
                 {/* --- NAVIGATION --- */}
                 <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
-                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Base Hub</Link>
+                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-[#0070f3]">Laptop Inventory</span>
+                    <span className="text-[#0070f3]">Laptop Collection</span>
                 </nav>
 
                 {/* --- HERO BANNER --- */}
                 <div className="bg-[#0f0f0f] rounded-[2.5rem] lg:rounded-[3.5rem] p-8 lg:p-16 mb-12 lg:mb-16 text-white relative overflow-hidden flex items-center border border-white/5 shadow-2xl">
                     <div className="relative z-10 max-w-2xl">
                         <div className="flex items-center gap-2 mb-4 lg:mb-6">
-                            <Terminal size={14} className="text-[#0070f3]" />
-                            <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-[#0070f3]">Enterprise Workstations</span>
+                            <Cpu size={14} className="text-[#0070f3]" />
+                            <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-[#0070f3]">Top Laptops</span>
                         </div>
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
-                            Engineered <br className="hidden sm:block"/> <span className="text-gray-500">for Power.</span>
+                            Find Your <br className="hidden sm:block"/> <span className="text-gray-500">Perfect Laptop</span>
                         </h1>
                         <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-md italic">
-                            Certified UK-Used Grade-A & Factory New machines.
+                            Premium UK-Used & Brand-New laptops ready to go.
                         </p>
                     </div>
                     <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#0070f3 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
@@ -110,15 +110,15 @@ export default function LaptopsPage() {
                         <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
                                 <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
-                                    Units. <Cpu size={20} className="text-[#0070f3]" />
+                                    Laptops. <Monitor size={20} className="text-[#0070f3]" />
                                 </h2>
                                 <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Systems Found
+                                    {filteredItems.length} Units Available
                                 </p>
                             </div>
                         </div>
 
-                        {/* --- GRID: 2 COLUMNS ON MOBILE (grid-cols-2) --- */}
+                        {/* --- GRID --- */}
                         {filteredItems.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
@@ -128,8 +128,8 @@ export default function LaptopsPage() {
                         ) : (
                             <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
                                 <Monitor size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Mismatch Found</p>
-                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Clear All Data</button>
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Laptops Found</p>
+                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Reset Search</button>
                             </div>
                         )}
 

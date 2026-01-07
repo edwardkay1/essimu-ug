@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // 1. Import Image component
 import { 
     ShoppingCart, 
-    Smartphone, 
     Wrench, 
     Menu, 
     X, 
     ChevronRight,
-    Zap
 } from 'lucide-react';
 import { useCart } from "../context/CartContext";
 import { Order } from "../common/Buttons";
@@ -18,10 +17,10 @@ export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
 
     const navItems = [
-        { name: "Smartphones", href: "/shop/smartphones", label: "New & UK Used", title: "Buy iPhones and Samsung in Uganda" },
-        { name: "Laptops", href: "/shop/laptops", label: "Workstations", title: "Pro Laptops for sale in Kampala" },
-        { name: "Smart TVs", href: "/shop/tvs", label: "4K Displays", title: "Latest Smart TVs at Essimu" },
-        { name: "Accessories", href: "/shop/accessories", label: "Original Gear", title: "Premium Phone Accessories" },
+        { name: "Smartphones", href: "/shop/smartphones", label: "Original • New & UK Used", title: "Buy iPhones and Samsung in Uganda" },
+        { name: "Laptops", href: "/shop/laptops", label: "Uk Used & New", title: "Pro Laptops for sale in Kampala" },
+        { name: "Smart TVs", href: "/shop/tvs", label: "Smart & Android TVs", title: "Latest Smart TVs at Essimu" },
+        { name: "Accessories", href: "/shop/accessories", label: "Chargers • Cables • AirPods", title: "Premium Phone Accessories" },
     ];
 
     return (
@@ -29,7 +28,7 @@ export default function Navbar() {
             {/* --- SEO PROMO BAR --- */}
             <div className="bg-gray-900 py-2 text-center">
                 <p className="text-[9px] font-black text-white uppercase tracking-[0.3em]">
-                    <span className="text-[#0070f3]">Authorized Dealer:</span> New & UK Used Specialist • Shop B118 Kisa Kyamaria
+                    <span className="text-[#0070f3]">Original Phones You Can Trust:</span> New & UK Used • Shop B118 Kisa Kyamaria
                 </p>
             </div>
 
@@ -37,12 +36,21 @@ export default function Navbar() {
                 
                 {/* --- BRAND IDENTITY --- */}
                 <Link href="/" className="flex items-center gap-3 group shrink-0" title="Essimu Uganda Home">
-                    <div className="size-10 flex items-center justify-center rounded-2xl bg-[#0070f3] text-white shadow-lg shadow-blue-500/20 group-hover:rotate-6 transition-transform">
-                        <Smartphone size={22} strokeWidth={3} />
+                    {/* Logo Container */}
+                    <div className="relative size-11 flex items-center justify-center group-hover:-rotate-6 transition-transform duration-300">
+                        <Image 
+                            src="/essimulogo.png" 
+                            alt="Essimu Logo" 
+                            width={44} 
+                            height={44} 
+                            className="object-contain"
+                            priority 
+                        />
                     </div>
+                    
                     <div className="flex flex-col">
                         <h1 className="text-gray-900 dark:text-white text-xl font-black leading-none tracking-tighter uppercase">ESSIMU</h1>
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#0070f3]">Uganda Hub</span>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#0070f3]">Phone Store</span>
                     </div>
                 </Link>
 
@@ -68,7 +76,6 @@ export default function Navbar() {
                 {/* --- ACTION BUTTONS --- */}
                 <div className="flex items-center gap-3 lg:gap-5">
                     
-                    {/* REPAIR BUTTON (SEO: Hardware Services) */}
                     <Link 
                         href="/repair" 
                         title="Professional Phone and Laptop Repair in Kampala"
@@ -78,12 +85,10 @@ export default function Navbar() {
                         <span className="text-[9px] font-black uppercase tracking-widest">Repair</span>
                     </Link>
 
-                    {/* WhatsApp Component */}
                     <div className="hidden lg:block">
                         <Order />
                     </div>
 
-                    {/* Cart Icon */}
                     <Link href="/cart" className="relative p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-blue-50 transition-all group" aria-label="View Shopping Cart">
                         <ShoppingCart size={20} className="text-gray-900 dark:text-white group-hover:text-[#0070f3]" />
                         {totalItems > 0 && (
@@ -93,7 +98,6 @@ export default function Navbar() {
                         )}
                     </Link>
 
-                    {/* Mobile Menu Toggle */}
                     <button 
                         onClick={() => setIsOpen(!isOpen)}
                         className="lg:hidden p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white"
@@ -128,7 +132,7 @@ export default function Navbar() {
                             onClick={() => setIsOpen(false)}
                             className="flex items-center justify-between p-4 rounded-2xl bg-gray-900 text-white"
                         >
-                            <span className="text-sm font-black uppercase tracking-widest">Hardware Repair</span>
+                            <span className="text-sm font-black uppercase tracking-widest">Repair Service</span>
                             <Wrench size={18} />
                         </Link>
                     </nav>

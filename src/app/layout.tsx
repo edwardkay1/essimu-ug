@@ -19,6 +19,17 @@ export const metadata: Metadata = {
     "Essimu enkadde", 
     "Essimu empya"
   ],
+  // --- ADDED ICONS SECTION ---
+  icons: {
+    icon: [
+      { url: "/Image/essimulogo.png" }, // Standard favicon
+      { url: "/Image/essimulogo.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/Image/essimulogo.png", sizes: "180x180", type: "image/png" }, // For iPhones
+    ],
+  },
+  // ---------------------------
   openGraph: {
     title: "Essimu Uganda | Premium New & UK Used Tech Hub",
     description: "Located at Kisa Kyamaria Shop B118. Your home for verified UK used phones and original laptops.",

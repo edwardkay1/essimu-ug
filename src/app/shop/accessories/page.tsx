@@ -25,7 +25,7 @@ export default function AccessoriesPage() {
         setCurrentPage(1); 
     };
 
-    // --- SEARCH & MULTI-FILTER LOGIC ---
+    // --- SEARCH & FILTER LOGIC ---
     const filteredItems = useMemo(() => {
         return accessoriesData.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -52,14 +52,14 @@ export default function AccessoriesPage() {
             
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
                 
-                {/* --- ACCESSORY SEARCH PROTOCOL --- */}
+                {/* --- SEARCH BAR --- */}
                 <div className="relative mb-8 lg:mb-12 group">
                     <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                         <Search size={18} className="text-gray-400 group-focus-within:text-[#0070f3] transition-colors" />
                     </div>
                     <input 
                         type="text"
-                        placeholder="Search Gear (e.g. Magsafe, Type-C, AirPods...)"
+                        placeholder="Search Accessories (e.g. Charger, AirPods, Cables...)"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-[#0070f3] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-blue-500/10"
@@ -76,9 +76,9 @@ export default function AccessoriesPage() {
 
                 {/* --- BREADCRUMBS --- */}
                 <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
-                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Base Hub</Link>
+                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-[#0070f3]">Accessories Index</span>
+                    <span className="text-[#0070f3]">Accessories</span>
                 </nav>
 
                 {/* --- HERO BANNER --- */}
@@ -89,10 +89,10 @@ export default function AccessoriesPage() {
                             <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0070f3]">Verified Add-ons</span>
                         </div>
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
-                            Complete <br/> Your <span className="text-gray-500">Setup.</span>
+                            Complete <br/> Your <span className="text-gray-500">Setup</span>
                         </h1>
                         <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-sm italic">
-                            Authorized power adapters and high-fidelity audio synced for your ecosystem.
+                            Authorized chargers, cables, and audio accessories ready for your devices.
                         </p>
                     </div>
                     <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#0070f3]/10 to-transparent pointer-events-none" />
@@ -111,14 +111,14 @@ export default function AccessoriesPage() {
                     <main className="flex-1">
                         <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
-                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Catalog.</h2>
+                                <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Catalog</h2>
                                 <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Units Found
+                                    {filteredItems.length} Units Available
                                 </p>
                             </div>
                         </div>
 
-                        {/* --- ACCESSORY GRID: 2 COLUMNS ON MOBILE --- */}
+                        {/* --- ACCESSORY GRID --- */}
                         {filteredItems.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
@@ -128,7 +128,7 @@ export default function AccessoriesPage() {
                         ) : (
                             <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
                                 <PackageSearch size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Gear Detected</p>
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Accessories Found</p>
                                 <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Reset Catalog</button>
                             </div>
                         )}

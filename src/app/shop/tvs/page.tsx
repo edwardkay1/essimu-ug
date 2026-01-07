@@ -23,7 +23,6 @@ export default function TelevisionsPage() {
         setCurrentPage(1); 
     };
 
-    // --- CINEMATIC FILTER LOGIC ---
     const filteredItems = useMemo(() => {
         return tvData.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -49,14 +48,14 @@ export default function TelevisionsPage() {
             
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
                 
-                {/* --- CINEMATIC SEARCH BAR --- */}
+                {/* --- SEARCH BAR --- */}
                 <div className="relative mb-8 lg:mb-12 group">
                     <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                         <Search size={18} className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                     </div>
                     <input 
                         type="text"
-                        placeholder="Search TVs (e.g. Sony 55 inch, LG OLED...)"
+                        placeholder="Search TVs (Sony 55”, LG OLED...)"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-indigo-500 rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-indigo-500/10"
@@ -73,9 +72,9 @@ export default function TelevisionsPage() {
 
                 {/* --- NAVIGATION --- */}
                 <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
-                    <Link href="/" className="text-gray-400 hover:text-indigo-500 transition-colors">Base Hub</Link>
+                    <Link href="/" className="text-gray-400 hover:text-indigo-500 transition-colors">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-indigo-600">Visual Display Index</span>
+                    <span className="text-indigo-600">TVs</span>
                 </nav>
 
                 {/* --- HERO BANNER --- */}
@@ -86,17 +85,17 @@ export default function TelevisionsPage() {
                                 <Cast size={12} className="text-white" />
                             </div>
                             <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">
-                                Smart Entertainment Hub
+                                Smart Entertainment
                             </span>
                         </div>
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
-                            Visual <br/> <span className="text-indigo-500">Immersion.</span>
+                            TV <br/> <span className="text-indigo-500">Time.</span>
                         </h1>
                         <p className="text-gray-400 text-xs lg:text-sm font-bold leading-relaxed max-w-md italic">
-                            OLED technology and HDR smart displays handpicked for Kampala's Home Cinemas.
+                            Handpicked OLED & HDR smart TVs for the perfect home cinema.
                         </p>
                     </div>
-                    <div className="absolute -right-20 -bottom-20 size-[300px] lg:size-[500px] bg-indigo-600/10 rounded-full blur-[100px]" />
+                    <div className="absolute -right-20 -bottom-20 w-[300px] lg:w-[500px] bg-indigo-600/10 rounded-full blur-[100px]" />
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
@@ -113,15 +112,15 @@ export default function TelevisionsPage() {
                         <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
                                 <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase flex items-center gap-2">
-                                    Display Grid. <Play size={20} className="text-indigo-600 fill-indigo-600" />
+                                    TV Collection <Play size={20} className="text-indigo-600 fill-indigo-600" />
                                 </h2>
                                 <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Smart Panels Syncing
+                                    {filteredItems.length} Models Available
                                 </p>
                             </div>
                         </div>
 
-                        {/* --- MOBILE GRID: 2 COLUMNS --- */}
+                        {/* --- GRID --- */}
                         {filteredItems.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
@@ -131,8 +130,8 @@ export default function TelevisionsPage() {
                         ) : (
                             <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
                                 <Tv size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Signal: No Matches</p>
-                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-indigo-600 text-[9px] font-black uppercase tracking-widest">Restart Display Protocol</button>
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No TVs Found</p>
+                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-indigo-600 text-[9px] font-black uppercase tracking-widest">Clear Filters</button>
                             </div>
                         )}
 

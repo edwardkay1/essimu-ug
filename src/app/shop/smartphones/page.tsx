@@ -23,7 +23,6 @@ export default function SmartphonesPage() {
         setCurrentPage(1); 
     };
 
-    // --- INTEGRATED SEARCH & FILTER LOGIC ---
     const filteredItems = useMemo(() => {
         return phoneData.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -49,14 +48,14 @@ export default function SmartphonesPage() {
             
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-20 py-8 lg:py-12">
                 
-                {/* --- UNIVERSAL SEARCH PROTOCOL --- */}
+                {/* --- SEARCH BAR --- */}
                 <div className="relative mb-8 lg:mb-12 group">
                     <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
                         <Search size={18} className="text-gray-400 group-focus-within:text-[#0070f3] transition-colors" />
                     </div>
                     <input 
                         type="text"
-                        placeholder="Search Phones (e.g. iPhone 15, S24 Ultra...)"
+                        placeholder="Search Phones (iPhone 15, Galaxy S24...)"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                         className="w-full bg-gray-50 dark:bg-white/[0.03] border-2 border-transparent focus:border-[#0070f3] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold dark:text-white outline-none transition-all shadow-sm focus:shadow-blue-500/10"
@@ -73,9 +72,9 @@ export default function SmartphonesPage() {
 
                 {/* --- NAVIGATION --- */}
                 <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] mb-10 overflow-x-auto whitespace-nowrap pb-2">
-                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Base Hub</Link>
+                    <Link href="/" className="text-gray-400 hover:text-[#0070f3]">Home</Link>
                     <ChevronRight size={10} className="text-gray-300" />
-                    <span className="text-[#0070f3]">Mobile Inventory</span>
+                    <span className="text-[#0070f3]">Phones</span>
                 </nav>
 
                 {/* --- HERO BANNER --- */}
@@ -84,21 +83,20 @@ export default function SmartphonesPage() {
                         <div className="flex items-center gap-2 mb-4 lg:mb-6">
                             <Activity size={14} className="animate-pulse" />
                             <span className="text-[9px] font-black uppercase tracking-[0.3em] bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                                Verified Stock Only
+                                Verified Stock
                             </span>
                         </div>
                         <h1 className="text-4xl lg:text-7xl font-black mb-4 lg:mb-6 leading-none tracking-tighter uppercase">
-                            Premium <br/> <span className="text-blue-200">Flagships.</span>
+                            Best <br/> <span className="text-blue-200">Phones</span>
                         </h1>
                         <p className="text-blue-50 text-xs lg:text-sm font-bold leading-relaxed max-w-sm italic">
-                            Authorized iPhone & Samsung dealer. Explore factory-sealed and Grade-A UK Used hardware.
+                            iPhone & Samsung, factory-sealed or Grade-A UK Used.
                         </p>
                     </div>
-                    <div className="absolute right-[-5%] bottom-[-10%] size-[300px] lg:size-[500px] bg-white/10 rounded-full blur-[100px]" />
+                    <div className="absolute right-[-5%] bottom-[-10%] w-[300px] lg:w-[500px] bg-white/10 rounded-full blur-[100px]" />
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
-                    {/* --- SIDEBAR --- */}
                     <aside className="hidden lg:block w-72 shrink-0">
                         <ProductSidebar 
                             selectedCats={selectedFilters} 
@@ -112,15 +110,15 @@ export default function SmartphonesPage() {
                         <div className="flex justify-between items-end mb-10 border-b border-gray-100 dark:border-white/5 pb-6">
                             <div>
                                 <h2 className="text-2xl lg:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">
-                                    The Elite Index.
+                                    Phones Collection
                                 </h2>
                                 <p className="text-[9px] font-black text-[#0070f3] uppercase tracking-[0.2em] mt-2">
-                                    {filteredItems.length} Handsets Available
+                                    {filteredItems.length} Available
                                 </p>
                             </div>
                         </div>
 
-                        {/* --- SMART GRID: 2 COLUMNS ON PHONE --- */}
+                        {/* --- GRID --- */}
                         {filteredItems.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
                                 {currentItems.map(item => (
@@ -130,8 +128,8 @@ export default function SmartphonesPage() {
                         ) : (
                             <div className="py-24 flex flex-col items-center text-center bg-gray-50 dark:bg-white/[0.02] rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5">
                                 <SmartphoneNfc size={40} className="text-gray-300 mb-4" />
-                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">Signal Lost: No Matches</p>
-                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Reset Protocol</button>
+                                <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No Phones Found</p>
+                                <button onClick={() => {setSelectedFilters([]); setSearchQuery("");}} className="mt-6 px-8 py-3 bg-white dark:bg-white/10 rounded-xl text-[#0070f3] text-[9px] font-black uppercase tracking-widest">Clear Filters</button>
                             </div>
                         )}
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Save, Upload, Tag, Package, RefreshCcw, Layers, Zap, Info } from "lucide-react";
+import { Save, Upload, Package, RefreshCcw, Layers, Zap, Info } from "lucide-react";
 
 interface ProductFormProps {
     onSuccess: () => void;
@@ -18,6 +18,10 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
         stock: ""
     });
 
+    // Image state
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -26,17 +30,32 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                 condition: initialData.condition || "Brand New",
                 brand: initialData.brand || "Apple",
                 description: initialData.description || "",
-                price: initialData.price.toString() || "",
-                stock: initialData.stock.toString() || ""
+                price: initialData.price?.toString() || "",
+                stock: initialData.stock?.toString() || ""
             });
+
+            if (initialData.imageUrl) {
+                setImagePreview(initialData.imageUrl);
+            }
         }
     }, [initialData]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would integrate with your Supabase/Firebase/API
-        console.log("Pushing Hardware Sync to ESSIMU Database:", formData);
+
+        // Demo: Show all form data including image
+        console.log("Hardware Sync Data:", { ...formData, imageFile });
+
+        // TODO: Upload imageFile to storage (Firebase, Supabase, etc.)
         onSuccess();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
     };
 
     return (
@@ -57,11 +76,13 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                         <div className="space-y-6 relative z-10">
                             {/* Product Name */}
                             <div>
-                                <label className="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase mb-3 px-1 tracking-[0.2em]">Deployment Name (Model)</label>
+                                <label className="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase mb-3 px-1 tracking-[0.2em]">
+                                    Deployment Name (Model)
+                                </label>
                                 <input 
                                     type="text" 
                                     value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="e.g. iPhone 15 Pro Max 256GB" 
                                     className="w-full bg-gray-50 dark:bg-black border-2 border-transparent rounded-2xl p-5 text-sm font-black text-gray-900 dark:text-white focus:border-[#0070f3] focus:bg-white dark:focus:bg-black outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700" 
                                     required 
@@ -74,7 +95,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                     <label className="block text-[9px] font-black text-gray-400 uppercase mb-3 px-1 tracking-[0.2em]">Unit Class</label>
                                     <select 
                                         value={formData.category}
-                                        onChange={(e) => setFormData({...formData, category: e.target.value})}
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                         className="w-full bg-gray-50 dark:bg-black border-2 border-transparent rounded-2xl p-5 text-sm font-black text-gray-900 dark:text-white focus:border-[#0070f3] outline-none transition-all cursor-pointer appearance-none"
                                     >
                                         <option value="Phone">Smartphone</option>
@@ -89,7 +110,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                     <label className="block text-[9px] font-black text-gray-400 uppercase mb-3 px-1 tracking-[0.2em]">System Grade</label>
                                     <select 
                                         value={formData.condition}
-                                        onChange={(e) => setFormData({...formData, condition: e.target.value})}
+                                        onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
                                         className="w-full bg-gray-50 dark:bg-black border-2 border-transparent rounded-2xl p-5 text-sm font-black text-gray-900 dark:text-white focus:border-[#0070f3] outline-none transition-all cursor-pointer appearance-none"
                                     >
                                         <option value="Brand New">Brand New (Sealed)</option>
@@ -106,7 +127,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                         <button
                                             key={b}
                                             type="button"
-                                            onClick={() => setFormData({...formData, brand: b})}
+                                            onClick={() => setFormData({ ...formData, brand: b })}
                                             className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                                                 formData.brand === b 
                                                 ? "bg-[#0070f3] text-white border-[#0070f3] shadow-lg shadow-blue-500/20" 
@@ -124,7 +145,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                 <label className="block text-[9px] font-black text-gray-400 uppercase mb-3 px-1 tracking-[0.2em]">Technical Overview (Specs)</label>
                                 <textarea 
                                     value={formData.description}
-                                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Battery health, Storage, RAM, Display specs..." 
                                     rows={5} 
                                     className="w-full bg-gray-50 dark:bg-black border-2 border-transparent rounded-[2rem] p-6 text-sm font-bold text-gray-900 dark:text-white focus:border-[#0070f3] outline-none transition-all resize-none placeholder:text-gray-300 dark:placeholder:text-gray-700" 
@@ -151,7 +172,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                     <input 
                                         type="number" 
                                         value={formData.price}
-                                        onChange={(e) => setFormData({...formData, price: e.target.value})}
+                                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                         placeholder="0" 
                                         className="w-full bg-white/5 border-2 border-transparent rounded-2xl py-5 pl-16 pr-6 text-xl font-black text-white focus:border-[#0070f3] outline-none transition-all" 
                                         required 
@@ -164,7 +185,7 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                                 <input 
                                     type="number" 
                                     value={formData.stock}
-                                    onChange={(e) => setFormData({...formData, stock: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                                     placeholder="1" 
                                     className="w-full bg-white/5 border-2 border-transparent rounded-2xl p-5 text-xl font-black text-white focus:border-[#0070f3] outline-none transition-all" 
                                     required 
@@ -173,13 +194,25 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                         </div>
                     </div>
 
-                    {/* Media Acquisition */}
-                    <div className="bg-white dark:bg-white/[0.02] p-10 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5 flex flex-col items-center justify-center min-h-[200px] group cursor-pointer hover:border-[#0070f3] hover:bg-blue-50/30 transition-all duration-500">
-                        <div className="size-16 bg-gray-50 dark:bg-black rounded-2xl flex items-center justify-center text-gray-300 group-hover:text-[#0070f3] group-hover:scale-110 transition-all mb-4">
-                            <Upload size={28} strokeWidth={1.5} />
+                    {/* Media Acquisition / Image Upload */}
+                    <div className="relative bg-white dark:bg-white/[0.02] p-10 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-white/5 flex flex-col items-center justify-center min-h-[200px] group cursor-pointer hover:border-[#0070f3] hover:bg-blue-50/30 transition-all duration-500">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+
+                        <div className="w-16 h-16 bg-gray-50 dark:bg-black rounded-2xl flex items-center justify-center text-gray-300 group-hover:text-[#0070f3] group-hover:scale-110 transition-all mb-4 overflow-hidden">
+                            {imagePreview ? (
+                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
+                            ) : (
+                                <Upload size={28} strokeWidth={1.5} />
+                            )}
                         </div>
-                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                            {initialData ? "Replace Hardware Asset" : "Acquire Product Image"}
+
+                        <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                            {imageFile ? "Change Hardware Image" : initialData ? "Replace Hardware Image" : "Upload Product Image"}
                         </p>
                     </div>
 
@@ -189,12 +222,12 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
                             {initialData ? (
                                 <>
                                     <RefreshCcw size={20} className="group-hover:rotate-180 transition-transform duration-700" />
-                                    Push Update to Catalog
+                                    Push Update
                                 </>
                             ) : (
                                 <>
                                     <Save size={20} className="group-hover:scale-125 transition-transform" />
-                                    Initialize Catalog Sync
+                                    Add Item
                                 </>
                             )}
                         </button>
