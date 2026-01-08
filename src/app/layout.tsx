@@ -4,6 +4,11 @@ import { CartProvider } from "../context/CartContext";
 import { AuthProvider } from "@/context/AuthContext"; // 1. Import AuthProvider
 
 export const metadata: Metadata = {
+  // google site
+  verification: {
+    google: "67PZ2hFhPIIXTVSP1QvEFTqIEnSJbYZUr5w7pfQYxxc",
+  },
+
   title: {
     default: "Essimu Uganda | New & UK Used Phones, Laptops & Repair Hub",
     template: "%s | Essimu Uganda"
