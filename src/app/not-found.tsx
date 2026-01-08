@@ -23,7 +23,7 @@ export default function NotFound() {
             Unit Not Located.
           </h1>
           <p className="text-[11px] font-black text-gray-500 uppercase tracking-widest leading-relaxed">
-            The asset you are looking for has been <span className="text-red-500">Purged</span> from the live repository or moved to a new destination.
+            The product you are looking for has been <span className="text-red-500">Purged</span> from the live repository or moved to a new destination.
           </p>
         </div>
 
